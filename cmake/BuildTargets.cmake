@@ -116,7 +116,7 @@ endif()
 
 set(PIE_LIBS ${PIE_CORE_LIB})
 
-configure_file(${PIE_SOURCE_DIR}/pie.cmake.in ${CMAKE_BINARY_DIR}/pie.cmake)
+configure_file(${PIE_SOURCE_DIR}/PIE.cmake.in ${CMAKE_BINARY_DIR}/PIE.cmake)
 
 # tests
 # add_test(NAME tSNE COMMAND ${PIE_BINARY_NAME} "--tSNE")
