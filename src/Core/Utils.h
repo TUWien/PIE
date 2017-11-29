@@ -56,8 +56,8 @@
 #define DK_RAD2DEG 	57.295779513082323
 
 // converts a version (e.g. 3.1.0) to a comparable int
-#define RDF_VERSION(major, minor, revision) (major << 16 | minor << 8 | revision)
-#define RDF_OPENCV_VERSION RDF_VERSION(CV_MAJOR_VERSION, CV_MINOR_VERSION, CV_VERSION_REVISION)
+#define PIE_VERSION(major, minor, revision) (major << 16 | minor << 8 | revision)
+#define PIE_OPENCV_VERSION PIE_VERSION(CV_MAJOR_VERSION, CV_MINOR_VERSION, CV_VERSION_REVISION)
 
 // Qt defines
 class QSettings;

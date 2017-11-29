@@ -139,7 +139,7 @@ void Utils::registerVersion() const {
 		+ QString::number(LOWORD(pFixedInfo->dwFileVersionLS));
 
 #else
-	QString version(RDF_FRAMEWORK_VERSION);	// default version (we do not know the build)
+	QString version(PIE_FRAMEWORK_VERSION);	// default version (we do not know the build)
 #endif
 	QApplication::setApplicationVersion(version);
 
