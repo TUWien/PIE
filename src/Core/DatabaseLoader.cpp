@@ -29,32 +29,30 @@
  [4] https://nomacs.org
  *******************************************************************************************************/
 
-#pragma once
+#include "DatabaseLoader.h"
+
+#include "Utils.h"
 
 #pragma warning(push, 0)	// no warnings from includes
-#include <QString>
-#include <QByteArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QDebug>
 #pragma warning(pop)
-
-#pragma warning (disable: 4251)	// inlined Qt functions in dll interface
-
-#ifndef DllCoreExport
-#ifdef DLL_CORE_EXPORT
-#define DllCoreExport Q_DECL_EXPORT
-#else
-#define DllCoreExport Q_DECL_IMPORT
-#endif
-#endif
-
-// Qt defines
 
 namespace pie {
 
-// read defines
+	// -------------------------------------------------------------------- DatabaseLoader 
+	DatabaseLoader::DatabaseLoader(const QString & filePath) {
+		mFilePath = filePath;
+	}
 
-namespace net {
+	void DatabaseLoader::parse() {
 
-	DllCoreExport QByteArray download(const QString& url, bool* ok = 0);
-}
+		Timer dt;
+		QJsonObject jd = Utils::readJson(mFilePath);
+		mCollection = Collection::fromJson(jd);
 
-}
+		qDebug() << mCollection.size() << "pages parsed in" << dt;
+
+	}
+ }

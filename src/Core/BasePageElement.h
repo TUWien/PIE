@@ -1,10 +1,11 @@
 /*******************************************************************************************************
- PIE is the Page Image Explorer developed at CVL/TU Wien for the EU project READ.
+ ReadFramework is the basis for modules developed at CVL/TU Wien for the EU project READ. 
+  
+ Copyright (C) 2016 Markus Diem <diem@cvl.tuwien.ac.at>
+ Copyright (C) 2016 Stefan Fiel <fiel@cvl.tuwien.ac.at>
+ Copyright (C) 2016 Florian Kleber <kleber@cvl.tuwien.ac.at>
 
- Copyright (C) 2018 Markus Diem <diem@caa.tuwien.ac.at>
- Copyright (C) 2018 Florian Kleber <kleber@caa.tuwien.ac.at>
-
- This file is part of PIE.
+ This file is part of ReadFramework.
 
  ReadFramework is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,9 +20,9 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
- The READ project  has  received  funding  from  the European  Union’s  Horizon  2020
+ The READ project  has  received  funding  from  the European  Union’s  Horizon  2020  
  research  and innovation programme under grant agreement No 674943
-
+ 
  related links:
  [1] https://cvl.tuwien.ac.at/
  [2] https://transkribus.eu/Transkribus/
@@ -32,11 +33,8 @@
 #pragma once
 
 #pragma warning(push, 0)	// no warnings from includes
-#include <QString>
-#include <QByteArray>
+#include <QObject>
 #pragma warning(pop)
-
-#pragma warning (disable: 4251)	// inlined Qt functions in dll interface
 
 #ifndef DllCoreExport
 #ifdef DLL_CORE_EXPORT
@@ -52,9 +50,25 @@ namespace pie {
 
 // read defines
 
-namespace net {
+class DllCoreExport BaseElement {
 
-	DllCoreExport QByteArray download(const QString& url, bool* ok = 0);
-}
+public:
+	BaseElement(const QString& id = QString());
+
+	DllCoreExport friend bool operator==(const BaseElement& l, const QString& id);
+	DllCoreExport friend bool operator==(const BaseElement& l, const BaseElement& r);
+	DllCoreExport friend bool operator!=(const BaseElement& l, const BaseElement& r);
+	DllCoreExport friend QDataStream& operator<<(QDataStream& s, const BaseElement& e);
+	DllCoreExport friend QDebug operator<< (QDebug d, const BaseElement &e);
+
+	void setId(const QString& id);
+	QString id() const;
+	virtual QString toString() const;
+
+	virtual void scale(double factor);
+
+protected:
+	QString mId;
+};
 
 }

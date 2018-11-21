@@ -31,12 +31,12 @@
 
 #pragma once
 
-#pragma warning(push, 0)	// no warnings from includes
-#include <QString>
-#include <QByteArray>
-#pragma warning(pop)
+#include "BasePageElement.h"
 
-#pragma warning (disable: 4251)	// inlined Qt functions in dll interface
+#pragma warning(push, 0)	// no warnings from includes
+#include <QVector>
+#include <QSize>
+#pragma warning(pop)
 
 #ifndef DllCoreExport
 #ifdef DLL_CORE_EXPORT
@@ -46,15 +46,81 @@
 #endif
 #endif
 
+#pragma warning(disable: 4251)  // dll-interface
+
 // Qt defines
+class QSettings;
 
-namespace pie {
+namespace pie {	
 
-// read defines
+class DllCoreExport Region : public BaseElement {
 
-namespace net {
+public:
+	enum Type {
+		type_unknown = 0,
+		type_root,
+		type_table_region,
+		type_table_cell,
+		type_text_region,
+		type_text_line,
+		type_word,
+		type_separator,
+		type_image,
+		type_graphic,
+		type_chart,
+		type_noise,
+		type_border,
 
-	DllCoreExport QByteArray download(const QString& url, bool* ok = 0);
-}
+		type_end
+	};
+
+	Region(Type type = type_unknown, const QSize& s = QSize());
+
+	static Region fromJson(const QJsonObject& jo);
+
+private:
+	QSize mSize;
+	Type mType;
+};
+
+class DllCoreExport ImageData : public BaseElement {
+
+public:
+	ImageData();
+
+	static ImageData fromJson(const QJsonObject& jo);
+
+private:
+	QString mFileName;
+	QSize mSize;
+};
+
+class DllCoreExport PageData : public BaseElement {
+
+public:
+	PageData();
+
+	static PageData fromJson(const QJsonObject& jo);
+
+private:
+	QString mXmlFilePath;
+	QString mContent;
+	ImageData mImg;
+
+	QVector<Region> mRegions;
+};
+
+class DllCoreExport Collection {
+
+public:
+	Collection();
+
+	static Collection fromJson(const QJsonObject& jo);
+
+	int size() const;
+
+private:
+	QVector<PageData> mPages;
+};
 
 }

@@ -31,12 +31,11 @@
 
 #pragma once
 
+#include "PageData.h"
+
 #pragma warning(push, 0)	// no warnings from includes
 #include <QString>
-#include <QByteArray>
 #pragma warning(pop)
-
-#pragma warning (disable: 4251)	// inlined Qt functions in dll interface
 
 #ifndef DllCoreExport
 #ifdef DLL_CORE_EXPORT
@@ -46,15 +45,21 @@
 #endif
 #endif
 
-// Qt defines
+namespace pie {	
 
-namespace pie {
+class DllCoreExport DatabaseLoader {
 
-// read defines
+public:
+	DatabaseLoader(const QString& filePath = QString());
 
-namespace net {
+	void parse();
 
-	DllCoreExport QByteArray download(const QString& url, bool* ok = 0);
-}
+	Collection collection() const;
+
+private:
+	QString mFilePath;
+
+	Collection mCollection;
+};
 
 }
