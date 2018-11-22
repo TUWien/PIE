@@ -1,0 +1,79 @@
+/* start widgets */
+pie--OpenFilesWidget,
+pie--RecentFilesWidget {
+	background-color: #fff;
+	min-height: 400px;
+	max-height: 600px;
+	max-width: 500px;
+	border: 1px solid #ccc;
+}
+
+pie--RecentFilesWidget > QLabel,
+pie--OpenFilesWidget > QLabel {
+
+	font-size: 16pt;
+	color: HIGHLIGHT_COLOR;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+pie--OpenFilesWidget > QPushButton {
+	border: none;
+	background-color: HIGHLIGHT_LIGHT;
+	font-size: 12pt;
+	color: HIGHLIGHT_COLOR;
+	min-height: 40px;
+	padding: 15px;
+	text-align: left;
+}
+
+pie--OpenFilesWidget > QPushButton:hover {
+	background-color: SELECTION_LIGHT;
+}
+
+pie--RecentFilesWidget > QListView {
+	border: none;
+	font-size: 12pt;
+	color: HIGHLIGHT_COLOR;
+	max-width: 400px;
+}
+pie--RecentFilesWidget > QListView QScrollBar:vertical,
+pie--RecentFilesWidget > QListView QScrollBar:horizontal {
+	border: 1px solid HIGHLIGHT_COLOR; 
+	background: BACKGROUND_COLOR; 
+}
+
+pie--RecentFilesWidget > QListView QScrollBar:vertical {
+	width: 10px; 
+}
+
+pie--RecentFilesWidget > QListView QScrollBar:horizontal {
+	height: 10px; 
+}
+
+pie--RecentFilesWidget > QListView QScrollBar:handle:vertical,
+pie--RecentFilesWidget > QListView QScrollBar:handle:horizontal {
+	border: none; 
+	background: HIGHLIGHT_COLOR; 
+}
+
+pie--RecentFilesWidget > QListView QScrollBar:handle:vertical {
+	min-height: 40px;
+}
+
+pie--RecentFilesWidget > QListView QScrollBar:handle:horizontal {
+	min-width: 40px;
+}
+
+pie--RecentFilesWidget > QListView QScrollBar:add-page:vertical, 
+pie--RecentFilesWidget > QListView QScrollBar:add-line:vertical,
+pie--RecentFilesWidget > QListView QScrollBar:sub-page:vertical,
+pie--RecentFilesWidget > QListView QScrollBar:sub-line:vertical,
+pie--RecentFilesWidget > QListView QScrollBar:add-page:horizontal, 
+pie--RecentFilesWidget > QListView QScrollBar:add-line:horizontal,
+pie--RecentFilesWidget > QListView QScrollBar:sub-page:horizontal,
+pie--RecentFilesWidget > QListView QScrollBar:sub-line:horizontal {
+	height: 0px;
+	width: 0px;
+	background: BACKGROUND_COLOR;
+}

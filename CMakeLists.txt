@@ -87,11 +87,9 @@ include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Core
 	)
 
-set(	PIE_RESOURCES
+set (PIE_QRC
 		src/pie.qrc
 	)
-
-QT5_ADD_RESOURCES(PIE_RCC ${PIE_RESOURCES})
 
 # TODO: uncomment if we ever need translations
 # file(GLOB PIE_TRANSLATIONS "translations/*.ts")

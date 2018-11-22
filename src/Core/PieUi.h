@@ -67,6 +67,7 @@ namespace pie {
 	//	bool loadFile(const QString& filePath, const QString& day = "", const QString& tube = "", int ind = -1);
 	//	//void showWelcome();
 		int addTab(QWidget* w, const QString& info = tr("New Tab"));
+		void newTab();
 
 	private:
 		void dragEnterEvent(QDragEnterEvent* ev);
@@ -82,11 +83,14 @@ namespace pie {
 	public:
 		MainWindow(QWidget* parent = 0, Qt::WindowFlags flags = 0);
 
+	protected:
+		void closeEvent(QCloseEvent* ev) override;
+
 	private:
 		void createLayout();
 		void createMenu();
-		//void loadStyleSheet();
-		//void loadSettings();
+		void loadStyleSheet();
+		void loadSettings();
 
 		// main widget
 		TabWidget* mTabWidget = 0;

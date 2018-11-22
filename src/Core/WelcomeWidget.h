@@ -1,4 +1,3 @@
-#include "DatabaseLoader.h"
 /*******************************************************************************************************
  PIE is the Page Image Explorer developed at CVL/TU Wien for the EU project READ.
 
@@ -20,7 +19,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
- The READ project  has  received  funding  from  the European  Unionâ€™s  Horizon  2020
+ The READ project  has  received  funding  from  the European  Union’s  Horizon  2020
  research  and innovation programme under grant agreement No 674943
 
  related links:
@@ -30,35 +29,76 @@
  [4] https://nomacs.org
  *******************************************************************************************************/
 
-#include "DatabaseLoader.h"
+#pragma once
 
-#include "Utils.h"
 #pragma warning(push, 0)	// no warnings from includes
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QDebug>
-#include <QFileInfo>
+#include <QWidget>
 #pragma warning(pop)
+
+#ifndef DllExport
+#ifdef DK_DLL_EXPORT
+#define DllExport Q_DECL_EXPORT
+#elif defined(DK_DLL_IMPORT)
+#define DllExport Q_DECL_IMPORT
+#else
+#define DllExport
+#endif
+#endif
+
+class QStandardItemModel;
 
 namespace pie {
 
-	// -------------------------------------------------------------------- DatabaseLoader 
-	DatabaseLoader::DatabaseLoader(const QString & filePath) {
-		mFilePath = filePath;
-	}
+class RecentFilesWidget : public QWidget {
+	Q_OBJECT
 
-	bool DatabaseLoader::parse() {
+public:
+	RecentFilesWidget(QWidget* parent = 0);
 
-		Timer dt;
-		QJsonObject jd = Utils::readJson(mFilePath);
-		mCollection = Collection::fromJson(jd, QFileInfo(mFilePath).baseName());
+	void setRecentFiles(const QStringList& filePaths);
 
-		qDebug() << mCollection.size() << "pages parsed in" << dt;
+signals:
+	void loadFileSignal(const QString& filePath) const;
 
-		return !mCollection.isEmpty();
-	}
+public slots:
+	void loadFile(const QModelIndex& index);
 
-	Collection DatabaseLoader::collection() const {
-		return mCollection;
-	}
- }
+protected:
+	void createLayout();
+
+	QStringList mRecentFiles;
+	QStandardItemModel* mModel = 0;
+};
+
+class OpenFilesWidget : public QWidget {
+	Q_OBJECT
+
+public:
+	OpenFilesWidget(QWidget* parent = 0);
+
+signals:
+	void loadFileSignal(const QString& filePath) const;
+
+protected:
+	void createLayout();
+};
+
+
+class WelcomeWidget : public QWidget {
+	Q_OBJECT
+
+public:
+	WelcomeWidget(QWidget* parent = 0);
+
+	void updateInfo();
+
+signals:
+	void loadFileSignal(const QString& filePath) const;
+
+protected:
+	void createLayout();
+
+	RecentFilesWidget* mRecentFilesWidget = 0;
+
+};
+}

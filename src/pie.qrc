@@ -1,5 +1,6 @@
 <RCC>
-    <qresource prefix="/rdf">
-	<file>../resources/img/rdf.svg</file>
+    <qresource prefix="/pie">
+		<file>stylesheet.css</file>
+		<file>img/open.svg</file>
 	</qresource>
 </RCC>

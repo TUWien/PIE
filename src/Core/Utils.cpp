@@ -217,21 +217,21 @@ bool Utils::loadToBuffer(const QString & filePath, QByteArray & ba) {
 /// <returns>The app path.</returns>
 QString Utils::appDataPath() {
 
-	QString appDataPath;
+	QString adp;
 
 #if QT_VERSION >= 0x050000
-	appDataPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+	adp = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
 #else
-	appDataPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+	adp = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
 #endif
 
 	// make our own folder
-	appDataPath += QDir::separator() + QCoreApplication::organizationName();
+	adp += QDir::separator() + QCoreApplication::organizationName();
 
-	if (!QDir().mkpath(appDataPath))
-		qWarning() << "I could not create" << appDataPath;
+	if (!QDir().mkpath(adp))
+		qWarning() << "I could not create" << adp;
 
-	return appDataPath;
+	return adp;
 }
 
 /// <summary>
@@ -288,6 +288,20 @@ QString Utils::baseName(const QString & filePath) {
 	}
 
 	return filePath.left(sI-1);	// -1 to remove the point
+}
+
+/// <summary>
+/// Converts the color to a qss legitimate string.
+/// #ff0000 would be converted to "rgba(255,0,0,100)".
+/// </summary>
+/// <param name="col">The color.</param>
+/// <returns>The color's qss string</returns>
+QString Utils::colorToString(const QColor & col) {
+
+	return "rgba(" + QString::number(col.red()) +
+		"," + QString::number(col.green()) +
+		"," + QString::number(col.blue()) +
+		"," + QString::number((float)col.alpha() / 255.0f*100.0f) + "%)";
 }
 
 QJsonObject Utils::readJson(const QString & filePath) {
@@ -666,6 +680,15 @@ QColor ColorManager::pink(double alpha) {
 /// <returns></returns>
 QColor ColorManager::white(double alpha) {
 	return QColor(255, 255, 255, qRound(alpha * 255));
+}
+
+/// <summary>
+/// Returns black - no, it's not NULL.
+/// </summary>
+/// <param name="alpha">Optional alpha [0 1].</param>
+/// <returns></returns>
+QColor ColorManager::black(double alpha) {
+	return QColor(0, 0, 0, qRound(alpha * 255));
 }
 
 QColor ColorManager::alpha(const QColor & col, double a) {

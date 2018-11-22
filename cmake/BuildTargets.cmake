@@ -15,7 +15,7 @@ endif()
 #binary
 link_directories(${OpenCV_LIBRARY_DIRS} ${LIBRARY_DIR})
 set(CHANGLOG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/src/changelog.txt)
-add_executable(${PIE_BINARY_NAME} WIN32  MACOSX_BUNDLE ${MAIN_SOURCES} ${MAIN_HEADERS} ${PIE_TRANSLATIONS} ${PIE_RC} ${CHANGLOG_FILE}) #changelog is added here, so that i appears in visual studio
+add_executable(${PIE_BINARY_NAME} WIN32  MACOSX_BUNDLE ${MAIN_SOURCES} ${MAIN_HEADERS} ${PIE_TRANSLATIONS} ${PIE_RC} ${PIE_QRC} ${CHANGLOG_FILE}) #changelog is added here, so that i appears in visual studio
 set_source_files_properties(${CHANGLOG_FILE} PROPERTIES HEADER_FILE_ONLY TRUE) # define that changelog should not be compiled
 
 target_link_libraries(${PIE_BINARY_NAME} ${PIE_LIB_CORE_NAME} ${OpenCV_LIBS} ${VERSION_LIB}) 
@@ -35,8 +35,9 @@ add_dependencies(${PIE_BINARY_NAME} ${PIE_DLL_CORE_NAME})
 target_include_directories(${PIE_BINARY_NAME} 		PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_include_directories(${PIE_DLL_CORE_NAME} 	PRIVATE ${OpenCV_INCLUDE_DIRS})
 
-qt5_use_modules(${PIE_BINARY_NAME} 		Core Network Widgets)
-qt5_use_modules(${PIE_DLL_CORE_NAME} 	Core Network Widgets)
+target_link_libraries(${PIE_BINARY_NAME} Qt5::Widgets Qt5::Gui Qt5::Network Qt5::Concurrent Qt5::Svg Qt5::WinExtras)
+target_link_libraries(${PIE_DLL_CORE_NAME} Qt5::Widgets Qt5::Gui Qt5::Network Qt5::Concurrent Qt5::Svg Qt5::WinExtras)
+
 
 # core flags
 set_target_properties(${PIE_DLL_CORE_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/libs/$<CONFIGURATION>)

@@ -34,12 +34,19 @@
 #include "Utils.h"
 #include "PageData.h"
 #include "DatabaseLoader.h"
+#include "WelcomeWidget.h"
+#include "Settings.h"
+#include "ActionManager.h"
+#include "Utils.h"
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QTabBar>
 #include <QDragEnterEvent>
 #include <QDebug>
 #include <QMimeData>
+#include <QFileInfo>
+#include <QApplication>
+#include <QDir>
 #pragma warning(pop)
 
 #ifndef DllCoreExport
@@ -57,6 +64,19 @@ namespace pie {
 		setObjectName("TabWidget");
 		tabBar()->setMovable(true);
 		setAcceptDrops(true);
+
+		ActionManager& am = ActionManager::instance();
+		addActions(am.fileActions().toList());
+		addActions(am.viewActions().toList());
+		addActions(am.toolsActions().toList());
+
+		newTab();
+	}
+
+	void TabWidget::newTab() {
+
+		WelcomeWidget* ww = new WelcomeWidget(this);
+		addTab(ww, tr("Welcome"));
 	}
 
 	void TabWidget::dragEnterEvent(QDragEnterEvent * ev) {
@@ -71,8 +91,6 @@ namespace pie {
 				}
 			}
 		}
-
-		qDebug() << "drag enter event...";
 
 		QTabWidget::dragEnterEvent(ev);
 	}
@@ -94,7 +112,15 @@ namespace pie {
 	bool TabWidget::loadFile(const QString & filePath) {
 
 		DatabaseLoader db(filePath);
-		db.parse();
+		
+		if (db.parse()) {
+			Settings::instance().app().addRecentFile(filePath);
+		}
+		else {
+			// TODO: add error
+			qDebug() << "could not parse" << filePath;
+			return false;
+		}
 
 		PlotWidget* pw = new PlotWidget(db.collection(), this);
 		addTab(pw, pw->title());
@@ -104,7 +130,7 @@ namespace pie {
 
 	int TabWidget::addTab(QWidget* w, const QString& info) {
 
-		int ni = QTabWidget::addTab(w, QIcon(":/flowView/img/autoflow-icon.png"), info);
+		int ni = QTabWidget::addTab(w, QIcon(":/pie/img/pie-icon.png"), info);
 		return ni;
 	}
 
@@ -139,6 +165,9 @@ namespace pie {
 
 		createLayout();
 		createMenu();
+		loadStyleSheet();
+		loadSettings();
+
 		resize(500, 300);
 	}
 
@@ -150,6 +179,68 @@ namespace pie {
 	}
 
 	void MainWindow::createMenu() {
+	}
+
+	void MainWindow::loadStyleSheet() {
+
+		QFileInfo cssInfo(QCoreApplication::applicationDirPath(), "stylesheet.css");
+
+		if (!cssInfo.exists())
+			cssInfo = QFileInfo(":/pie/stylesheet.css");
+
+		QFile file(cssInfo.absoluteFilePath());
+
+		if (file.open(QFile::ReadOnly)) {
+
+			QString cssString = file.readAll();
+
+			// replace color placeholders
+			cssString.replace("INFO_COLOR", Utils::colorToString(ColorManager::lightGray()));
+			cssString.replace("HIGHLIGHT_LIGHT", Utils::colorToString(ColorManager::blue(0.5)));
+			cssString.replace("HIGHLIGHT_COLOR", Utils::colorToString(ColorManager::blue()));
+			cssString.replace("SELECTION_LIGHT", Utils::colorToString(ColorManager::green(0.5)));
+			cssString.replace("SELECTION_COLOR", Utils::colorToString(ColorManager::green()));
+			cssString.replace("BACKGROUND_COLOR", Utils::colorToString(ColorManager::white()));
+			cssString.replace("FOREGROUND_COLOR", Utils::colorToString(ColorManager::black()));
+
+			qApp->setStyleSheet(cssString);
+			file.close();
+
+			qDebug() << "CSS loaded from: " << cssInfo.absoluteFilePath();
+			//qDebug().noquote() << "style: \n" << cssString;
+		}
+		else
+			qDebug() << "could not load styles from: " << cssInfo.absoluteFilePath();
+	}
+
+	void MainWindow::loadSettings() {
+		DefaultSettings settings;
+
+#ifdef WIN32
+		// fixes #392 - starting maximized on 2nd screen - tested on win8 only
+		QRect r = settings.value("geometryAutoFlow", QRect()).toRect();
+
+		if (r.width() && r.height())	// do not set the geometry if autoflow is loaded the first time
+			setGeometry(r);
+#endif
+
+		restoreGeometry(settings.value("geometry").toByteArray());
+		restoreState(settings.value("windowState").toByteArray());
+	}
+
+	void MainWindow::closeEvent(QCloseEvent *ev) {
+
+		DefaultSettings settings;
+
+		settings.setValue("geometryAutoFlow", geometry());
+		settings.setValue("geometry", saveGeometry());
+		settings.setValue("windowState", saveState());
+		
+		DefaultSettings ds;
+		Settings::instance().save(ds);
+		qDebug() << "settings saved...";
+
+		QMainWindow::closeEvent(ev);
 	}
 
 }

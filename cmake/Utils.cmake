@@ -2,7 +2,7 @@
 macro(PIE_FIND_QT)
 	
 	set(CMAKE_AUTOMOC ON)
-	set(CMAKE_AUTORCC OFF)
+	set(CMAKE_AUTORCC ON)
 	
 	set(CMAKE_INCLUDE_CURRENT_DIR ON)
 	if(NOT QT_QMAKE_EXECUTABLE)
@@ -16,9 +16,12 @@ macro(PIE_FIND_QT)
 	set(QT_ROOT ${QT_QMAKE_PATH}/)
 	set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${QT_QMAKE_PATH}\\..\\lib\\cmake\\Qt5)
 	
+	find_package(Qt5 REQUIRED Core Network Svg Concurrent)
 	
-	find_package(Qt5 REQUIRED Core Network LinguistTools)
-	
+	if (MSVC)
+		find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED WinExtras)
+	endif()
+
 	if (NOT Qt5_FOUND)
 		message(FATAL_ERROR "Qt5 not found. Check your QT_QMAKE_EXECUTABLE path and set it to the correct location")
 	endif()
