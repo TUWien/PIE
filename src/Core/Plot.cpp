@@ -1,4 +1,3 @@
-#include "DatabaseLoader.h"
 /*******************************************************************************************************
  PIE is the Page Image Explorer developed at CVL/TU Wien for the EU project READ.
 
@@ -30,35 +29,25 @@
  [4] https://nomacs.org
  *******************************************************************************************************/
 
-#include "DatabaseLoader.h"
+#include "Plot.h"
 
-#include "Utils.h"
 #pragma warning(push, 0)	// no warnings from includes
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QDebug>
-#include <QFileInfo>
 #pragma warning(pop)
 
 namespace pie {
 
-	// -------------------------------------------------------------------- DatabaseLoader 
-	DatabaseLoader::DatabaseLoader(const QString & filePath) {
-		mFilePath = filePath;
+	// -------------------------------------------------------------------- PlotWidget 
+	PlotWidget::PlotWidget(const Collection& collection, QWidget * parent) : QWidget(parent) {
+
+		mCollection = collection;
+		createLayout();
 	}
 
-	bool DatabaseLoader::parse() {
-
-		Timer dt;
-		QJsonObject jd = Utils::readJson(mFilePath);
-		mCollection = Collection::fromJson(jd, QFileInfo(mFilePath).baseName());
-
-		qDebug() << mCollection.size() << "pages parsed in" << dt;
-
-		return mCollection.isEmpty();
+	QString PlotWidget::title() const {
+		return mCollection.name();
 	}
 
-	Collection DatabaseLoader::collection() const {
-		return mCollection;
+	void PlotWidget::createLayout() {
+		// TODO
 	}
- }
+}

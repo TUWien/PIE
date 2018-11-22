@@ -88,6 +88,14 @@ public:
 	static int64 writeJson(const QString& filePath, const QJsonObject& jo);
 	static void initDefaultFramework();
 
+	/// <summary>
+	/// Returns true if the filePath contains a valid file.
+	/// Symbolic links are resolved
+	/// </summary>
+	/// <param name="filePath">The file path.</param>
+	/// <returns>True if the extension is valid.</returns>
+	static bool Utils::isValidFile(const QString& filePath);
+
 	// little number thingies
 	template<typename num>
 	static num clamp(num val, num min, num max) {

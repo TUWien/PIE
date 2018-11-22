@@ -43,6 +43,7 @@
 #include "PageData.h"
 #include "Utils.h"
 #include "DatabaseLoader.h"
+#include "PieUi.h"
 
 #if defined(_MSC_BUILD) && !defined(QT_NO_DEBUG_OUTPUT) // fixes cmake bug - really release uses subsystem windows, debug and release subsystem console
 #pragma comment (linker, "/SUBSYSTEM:CONSOLE")
@@ -75,11 +76,11 @@ int main(int argc, char** argv) {
 	parser.setApplicationDescription("Welcome to the Page Image Explorer (PIE).");
 	parser.addHelpOption();
 	parser.addVersionOption();
-	//parser.addPositionalArgument("imagepath", QObject::tr("Path to an input image."));
+	parser.addPositionalArgument("databasepath", QObject::tr("Path to a PIE database."));
 
-	//// xml path
-	//QCommandLineOption xmlOpt(QStringList() << "x" << "xml", QObject::tr("Path to PAGE xml. If provided, we make use of the information"), "path");
-	//parser.addOption(xmlOpt);
+	// xml path
+	QCommandLineOption testOpt(QStringList() << "test", QObject::tr("If set, Unit Tests are performed"));
+	parser.addOption(testOpt);
 
 	parser.process(*QCoreApplication::instance());
 	// CMD parser --------------------------------------------------------------------
@@ -90,17 +91,24 @@ int main(int argc, char** argv) {
 
 	// apply debug settings - convenience if you don't want to always change the cmd args
 	//applyDebugSettings(dc);
+	
+	qDebug() << "lol <-- help me, I am drowning";
 
 	// for now
-	if (true) {
+	if (parser.isSet(testOpt)) {
 		pie::DatabaseLoader db("C:/temp/db.json");
 		db.parse();
 
 		pie::test::Processor(db.collection());
 	}
+	// show them what we've got
 	else {
-		qInfo() << "Please specify an input image...";
-		parser.showHelp();
+		pie::MainWindow* win = new pie::MainWindow();
+		win->show();
+		
+		app.exec();
+
+		delete win;
 	}
 
 	// save settings

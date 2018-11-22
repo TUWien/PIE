@@ -52,7 +52,7 @@ class DllCoreExport DatabaseLoader {
 public:
 	DatabaseLoader(const QString& filePath = QString());
 
-	void parse();
+	bool parse();
 
 	Collection collection() const;
 

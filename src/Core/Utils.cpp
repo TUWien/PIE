@@ -350,6 +350,33 @@ void Utils::initDefaultFramework() {
 
 }
 
+bool Utils::isValidFile(const QString & filePath) {
+
+	QFileInfo fInfo(filePath);
+	if (fInfo.isSymLink())
+		fInfo = fInfo.symLinkTarget();
+
+	if (!fInfo.exists())
+		return false;
+
+	QString fileName = fInfo.fileName();
+
+	QStringList fileFilters;
+	fileFilters << "*.json";
+
+	for (const QString& f : fileFilters) {
+
+		QRegExp exp = QRegExp(f, Qt::CaseInsensitive);
+		exp.setPatternSyntax(QRegExp::Wildcard);
+		if (exp.exactMatch(fileName))
+			return true;
+	}
+
+	qDebug() << filePath << "is not valid...";
+
+	return false;
+}
+
 // Converter --------------------------------------------------------------------
 
 /// <summary>

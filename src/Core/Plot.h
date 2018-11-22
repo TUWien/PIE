@@ -1,4 +1,3 @@
-#include "DatabaseLoader.h"
 /*******************************************************************************************************
  PIE is the Page Image Explorer developed at CVL/TU Wien for the EU project READ.
 
@@ -30,35 +29,44 @@
  [4] https://nomacs.org
  *******************************************************************************************************/
 
-#include "DatabaseLoader.h"
+#pragma once
 
-#include "Utils.h"
+#include "PageData.h"
+
 #pragma warning(push, 0)	// no warnings from includes
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QDebug>
-#include <QFileInfo>
+#include <QWidget>
 #pragma warning(pop)
+
+#pragma warning (disable: 4251)	// inlined Qt functions in dll interface
+
+#ifndef DllCoreExport
+#ifdef DLL_CORE_EXPORT
+#define DllCoreExport Q_DECL_EXPORT
+#else
+#define DllCoreExport Q_DECL_IMPORT
+#endif
+#endif
+
+// Qt defines
 
 namespace pie {
 
-	// -------------------------------------------------------------------- DatabaseLoader 
-	DatabaseLoader::DatabaseLoader(const QString & filePath) {
-		mFilePath = filePath;
-	}
+// read defines
 
-	bool DatabaseLoader::parse() {
 
-		Timer dt;
-		QJsonObject jd = Utils::readJson(mFilePath);
-		mCollection = Collection::fromJson(jd, QFileInfo(mFilePath).baseName());
 
-		qDebug() << mCollection.size() << "pages parsed in" << dt;
+	class DllCoreExport PlotWidget : public QWidget {
+		Q_OBJECT
 
-		return mCollection.isEmpty();
-	}
+	public:
+		PlotWidget(const Collection& collection, QWidget* parent = 0);
 
-	Collection DatabaseLoader::collection() const {
-		return mCollection;
-	}
- }
+		QString title() const;
+
+	private:
+		void createLayout();
+
+		Collection mCollection;
+	};
+
+}

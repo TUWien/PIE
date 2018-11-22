@@ -137,14 +137,18 @@ private:
 class DllCoreExport Collection {
 
 public:
-	Collection();
+	Collection(const QString& name = "");
 
-	static Collection fromJson(const QJsonObject& jo);
+	static Collection fromJson(const QJsonObject& jo, const QString& name);
+
+	bool isEmpty();
 
 	int size() const;
+	QString name() const;
 	QVector<QSharedPointer<PageData> > pages() const;
 
 private:
+	QString mName;
 	QVector<QSharedPointer<PageData> > mPages;
 };
 

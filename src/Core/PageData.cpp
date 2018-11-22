@@ -117,12 +117,13 @@ namespace pie {
 	}
 
 	// -------------------------------------------------------------------- Collection 
-	Collection::Collection() {
+	Collection::Collection(const QString& name) {
+		mName = name;
 	}
 
-	Collection Collection::fromJson(const QJsonObject & jo) {
+	Collection Collection::fromJson(const QJsonObject & jo, const QString& name) {
 
-		Collection c;
+		Collection c(name);
 
 		QJsonArray pages = jo.value("imgs").toArray();
 		for (auto p : pages)
@@ -132,8 +133,16 @@ namespace pie {
 
 	}
 
+	bool Collection::isEmpty() {
+		return mPages.isEmpty();
+	}
+
 	int Collection::size() const {
 		return mPages.size();
+	}
+
+	QString Collection::name() const {
+		return mName;
 	}
 
 	QVector<QSharedPointer<PageData>> Collection::pages() const {

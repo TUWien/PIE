@@ -1,4 +1,3 @@
-#include "DatabaseLoader.h"
 /*******************************************************************************************************
  PIE is the Page Image Explorer developed at CVL/TU Wien for the EU project READ.
 
@@ -30,35 +29,68 @@
  [4] https://nomacs.org
  *******************************************************************************************************/
 
-#include "DatabaseLoader.h"
+#pragma once
 
-#include "Utils.h"
 #pragma warning(push, 0)	// no warnings from includes
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QDebug>
-#include <QFileInfo>
+#include <QTabWidget>
+#include <QMainWindow>
 #pragma warning(pop)
+
+#pragma warning (disable: 4251)	// inlined Qt functions in dll interface
+
+#ifndef DllCoreExport
+#ifdef DLL_CORE_EXPORT
+#define DllCoreExport Q_DECL_EXPORT
+#else
+#define DllCoreExport Q_DECL_IMPORT
+#endif
+#endif
+
+// Qt defines
+class QMimeData;
 
 namespace pie {
 
-	// -------------------------------------------------------------------- DatabaseLoader 
-	DatabaseLoader::DatabaseLoader(const QString & filePath) {
-		mFilePath = filePath;
-	}
+// read defines
 
-	bool DatabaseLoader::parse() {
+	class PlotWidget;
 
-		Timer dt;
-		QJsonObject jd = Utils::readJson(mFilePath);
-		mCollection = Collection::fromJson(jd, QFileInfo(mFilePath).baseName());
+	class DllCoreExport TabWidget : public QTabWidget {
+		Q_OBJECT
 
-		qDebug() << mCollection.size() << "pages parsed in" << dt;
+	public:
+		TabWidget(QWidget* parent = 0);
 
-		return mCollection.isEmpty();
-	}
+	public slots:
+	//	void removeTab(int index = -1);
+	//	void tabChanged(int index);
+	//	bool loadFile(const QString& filePath, const QString& day = "", const QString& tube = "", int ind = -1);
+	//	//void showWelcome();
+		int addTab(QWidget* w, const QString& info = tr("New Tab"));
 
-	Collection DatabaseLoader::collection() const {
-		return mCollection;
-	}
- }
+	private:
+		void dragEnterEvent(QDragEnterEvent* ev);
+		void dropEvent(QDropEvent* ev);
+		bool loadFile(const QString& filePath);
+
+		bool loadFromMime(const QMimeData* mimeData);
+	};
+
+	class DllCoreExport MainWindow : public QMainWindow {
+		Q_OBJECT
+
+	public:
+		MainWindow(QWidget* parent = 0, Qt::WindowFlags flags = 0);
+
+	private:
+		void createLayout();
+		void createMenu();
+		//void loadStyleSheet();
+		//void loadSettings();
+
+		// main widget
+		TabWidget* mTabWidget = 0;
+
+	};
+
+}
