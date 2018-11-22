@@ -32,13 +32,15 @@
 #pragma once
 
 #include "BasePageElement.h"
+#include "PageData.h"
+#include "Utils.h"
 
 #pragma warning(push, 0)	// no warnings from includes
-#include <QVector>
-#include <QSize>
-
-#include <functional>
+#include <QColor>
+#include <QSharedPointer>
 #pragma warning(pop)
+
+#pragma warning (disable: 4251)	// inlined Qt functions in dll interface
 
 #ifndef DllCoreExport
 #ifdef DLL_CORE_EXPORT
@@ -48,104 +50,23 @@
 #endif
 #endif
 
-#pragma warning(disable: 4251)  // dll-interface
-
 // Qt defines
-class QSettings;
 
-namespace pie {	
+namespace pie {
 
-class DllCoreExport Region : public BaseElement {
+// pie defines
 
-public:
-	enum Type {
-		type_unknown = 0,
-		type_root,
-		type_table_region,
-		type_table_cell,
-		type_text_region,
-		type_text_line,
-		type_word,
-		type_separator,
-		type_image,
-		type_graphic,
-		type_chart,
-		type_noise,
-		type_border,
-
-		type_end
-	};
-	enum Property {
-		p_width = 0,
-		p_height,
-		p_area,
-
-		prop_end
-	};
-
-	Region(Type type = type_unknown, const QSize& s = QSize());
-
-	QSize size() const;
-	
-	// properties
-	double area() const;
-	double width() const;
-	double height() const;
-
-	static Region fromJson(const QJsonObject& jo);
-
-private:
-	QSize mSize;
-	Type mType;
-};
-
-class DllCoreExport ImageData : public BaseElement {
+class DllCoreExport DisplayData : public BaseElement {
 
 public:
-	ImageData();
-
-	QString name() const;
-
-	static ImageData fromJson(const QJsonObject& jo);
+	DisplayData(double x = 0, double y = 0, const QColor& col = ColorManager::lightGray(0.5));
 
 private:
-	QString mFileName;
-	QSize mSize;
-};
+	double mX;
+	double mY;
+	QColor mCol;
+	QSharedPointer<PageData> mPage;
 
-class DllCoreExport PageData : public BaseElement {
-
-public:
-	PageData();
-
-	int numRegions() const;
-	QVector<QSharedPointer<Region> > regions() const;
-	QString name() const;
-
-	double averageRegion(std::function<double(const Region&)> prop) const;
-
-	static PageData fromJson(const QJsonObject& jo);
-
-private:
-	QString mXmlFilePath;
-	QString mContent;
-	ImageData mImg;
-
-	QVector<QSharedPointer<Region> > mRegions;
-};
-
-class DllCoreExport Collection {
-
-public:
-	Collection();
-
-	static Collection fromJson(const QJsonObject& jo);
-
-	int size() const;
-	QVector<QSharedPointer<PageData> > pages() const;
-
-private:
-	QVector<QSharedPointer<PageData> > mPages;
 };
 
 }

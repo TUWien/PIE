@@ -30,10 +30,13 @@
  *******************************************************************************************************/
 
 #include "PageData.h"
+#include "Algorithm.h"
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QSharedPointer>
+#include <QDebug>
 #pragma warning(pop)
 
 namespace pie {
@@ -42,6 +45,22 @@ namespace pie {
 	Region::Region(Type type, const QSize & s) {
 		mType = type;
 		mSize = s;
+	}
+
+	QSize Region::size() const {
+		return mSize;
+	}
+
+	double Region::area() const {
+		return mSize.width()*mSize.height();
+	}
+
+	double Region::width() const {
+		return mSize.width();
+	}
+
+	double Region::height() const {
+		return mSize.height();
 	}
 
 	Region Region::fromJson(const QJsonObject & jo) {
@@ -61,6 +80,28 @@ namespace pie {
 	PageData::PageData() {
 	}
 
+	int PageData::numRegions() const {
+		return mRegions.size();
+	}
+
+	double PageData::averageRegion(std::function<double(const Region&)> prop) const {
+
+		QList<double> sizes;
+		for (const auto r : regions()) {
+			sizes << prop(*r);
+		}
+
+		return Math::statMoment(sizes, 0.5);
+	}
+	
+	QVector<QSharedPointer<Region>> PageData::regions() const {
+		return mRegions;
+	}
+
+	QString PageData::name() const {
+		return mImg.name();
+	}
+
 	PageData PageData::fromJson(const QJsonObject & jo) {
 
 		PageData pd;
@@ -70,7 +111,7 @@ namespace pie {
 
 		QJsonArray regions = jo.value("regions").toArray();
 		for (auto r : regions)
-			pd.mRegions << Region::fromJson(r.toObject());
+			pd.mRegions << QSharedPointer<Region>::create(Region::fromJson(r.toObject()));
 
 		return pd;
 	}
@@ -85,7 +126,7 @@ namespace pie {
 
 		QJsonArray pages = jo.value("imgs").toArray();
 		for (auto p : pages)
-			c.mPages << PageData::fromJson(p.toObject());
+			c.mPages << QSharedPointer<PageData>::create(PageData::fromJson(p.toObject()));
 
 		return c;
 
@@ -94,9 +135,17 @@ namespace pie {
 	int Collection::size() const {
 		return mPages.size();
 	}
+
+	QVector<QSharedPointer<PageData>> Collection::pages() const {
+		return mPages;
+	}
 	
 	// -------------------------------------------------------------------- ImageData 
 	ImageData::ImageData() {
+	}
+
+	QString ImageData::name() const {
+		return mFileName;
 	}
 
 	ImageData ImageData::fromJson(const QJsonObject & jo) {

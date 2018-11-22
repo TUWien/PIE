@@ -146,6 +146,25 @@ protected:
 	QTime mTimer;
 };
 
+namespace ColorManager {
+
+	DllCoreExport QColor randColor(double alpha = 1.0);
+	DllCoreExport QColor getColor(int idx, double alpha = 1.0);
+	DllCoreExport QVector<QColor> colors();
+
+	DllCoreExport QColor lightGray(double alpha = 1.0);
+	DllCoreExport QColor darkGray(double alpha = 1.0);
+	DllCoreExport QColor red(double alpha = 1.0);
+	DllCoreExport QColor green(double alpha = 1.0);
+	DllCoreExport QColor blue(double alpha = 1.0);
+	DllCoreExport QColor pink(double alpha = 1.0);
+	DllCoreExport QColor white(double alpha = 1.0);
+
+	DllCoreExport QColor alpha(const QColor& col, double a);
+
+	// add your favorite colors here
+}
+
 /// <summary>
 /// Flags turns enums into typesave flags
 /// It is strongly related (copied) from 

@@ -39,6 +39,8 @@
 #include <opencv2/core.hpp>
 #pragma warning(pop)
 
+#include "Processor.h"
+#include "PageData.h"
 #include "Utils.h"
 #include "DatabaseLoader.h"
 
@@ -57,7 +59,7 @@ int main(int argc, char** argv) {
 	qInfo().nospace() << "I am using OpenCV " << CV_MAJOR_VERSION << "." << CV_MINOR_VERSION << "." << CV_VERSION_REVISION;
 
 	QCoreApplication::setOrganizationName("TU Wien");
-	QCoreApplication::setOrganizationDomain("http://www.cvl.tuwien.ac.at/");
+	QCoreApplication::setOrganizationDomain("https://cvl.tuwien.ac.at/");
 	QCoreApplication::setApplicationName("PIE - Page Image Explorer");
 	pie::Utils::instance().initFramework();
 
@@ -93,6 +95,8 @@ int main(int argc, char** argv) {
 	if (true) {
 		pie::DatabaseLoader db("C:/temp/db.json");
 		db.parse();
+
+		pie::test::Processor(db.collection());
 	}
 	else {
 		qInfo() << "Please specify an input image...";

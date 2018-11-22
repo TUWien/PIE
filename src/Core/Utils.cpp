@@ -518,4 +518,135 @@ int Timer::elapsed() const {
 	return mTimer.elapsed();
 }
 
+// ColorManager --------------------------------------------------------------------
+/// <summary>
+/// Returns a pleasent color.
+/// </summary>
+/// <param name="idx">If idx != -1 a specific color is chosen from the palette.</param>
+/// <returns></returns>
+QColor ColorManager::randColor(double alpha) {
+
+	QVector<QColor> cols = colors();
+	int maxCols = cols.size();
+
+	int	idx = qRound(Utils::rand()*maxCols * 3);
+
+	return getColor(idx, alpha);
+}
+
+/// <summary>
+/// Returns a pleasent color.
+/// </summary>
+/// <param name="idx">If idx != -1 a specific color is chosen from the palette.</param>
+/// <returns></returns>
+QColor ColorManager::getColor(int idx, double alpha) {
+
+	assert(idx >= 0);
+
+	QVector<QColor> cols = colors();
+	assert(cols.size() > 0);
+
+	QColor col = cols[idx % cols.size()];
+
+	// currently not hit
+	if (idx > 2 * cols.size())
+		col = col.darker();
+	else if (idx > cols.size())
+		col = col.lighter();
+
+	col.setAlpha(qRound(alpha * 255));
+
+	return col;
+}
+
+/// <summary>
+/// Returns our color palette.
+/// </summary>
+/// <returns></returns>
+QVector<QColor> ColorManager::colors() {
+
+	static QVector<QColor> cols;
+
+	if (cols.empty()) {
+		cols << QColor(238, 120, 34);
+		cols << QColor(240, 168, 47);
+		cols << QColor(120, 192, 167);
+		cols << QColor(251, 234, 181);
+	}
+
+	return cols;
+}
+
+/// <summary>
+/// Returns a light gray.
+/// </summary>
+/// <param name="alpha">Optional alpha [0 1].</param>
+/// <returns></returns>
+QColor ColorManager::lightGray(double alpha) {
+	return QColor(200, 200, 200, qRound(alpha * 255));
+}
+
+/// <summary>
+/// Returns a dark gray.
+/// </summary>
+/// <param name="alpha">Optional alpha [0 1].</param>
+/// <returns></returns>
+QColor ColorManager::darkGray(double alpha) {
+	return QColor(66, 66, 66, qRound(alpha * 255));
+}
+
+/// <summary>
+/// Returns a dark red.
+/// </summary>
+/// <param name="alpha">Optional alpha [0 1].</param>
+/// <returns></returns>
+QColor ColorManager::red(double alpha) {
+	return QColor(200, 50, 50, qRound(alpha * 255));
+}
+
+/// <summary>
+/// Returns a light green.
+/// </summary>
+/// <param name="alpha">Optional alpha [0 1].</param>
+/// <returns></returns>
+DllCoreExport QColor ColorManager::green(double alpha) {
+
+	return QColor(120, 192, 167, qRound(alpha * 255));
+}
+
+/// <summary>
+/// Returns the TU Wien blue.
+/// </summary>
+/// <param name="alpha">Optional alpha [0 1].</param>
+/// <returns></returns>
+QColor ColorManager::blue(double alpha) {
+	return QColor(0, 102, 153, qRound(alpha * 255));
+}
+
+/// <summary>
+/// Returns a pink color - not the artist.
+/// </summary>
+/// <param name="alpha">Optional alpha [0 1].</param>
+/// <returns></returns>
+QColor ColorManager::pink(double alpha) {
+	return QColor(255, 0, 127, qRound(alpha * 255));
+}
+
+/// <summary>
+/// Returns white - yes it's #fff.
+/// </summary>
+/// <param name="alpha">Optional alpha [0 1].</param>
+/// <returns></returns>
+QColor ColorManager::white(double alpha) {
+	return QColor(255, 255, 255, qRound(alpha * 255));
+}
+
+QColor ColorManager::alpha(const QColor & col, double a) {
+
+	QColor c = col;
+	c.setAlphaF(a);
+
+	return c;
+}
+
 }
