@@ -172,6 +172,8 @@ namespace ColorManager {
 
 	DllCoreExport QColor alpha(const QColor& col, double a);
 
+	DllCoreExport QPixmap colorizePixmap(const QPixmap& pm, const QColor& col, double opacity = 1.0);
+
 	// add your favorite colors here
 }
 

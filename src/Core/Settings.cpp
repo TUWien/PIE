@@ -67,7 +67,8 @@ void AppSettings::load(QSettings& settings) {
 
 	settings.beginGroup(mName);
 
-	recentFiles = settings.value("recentFiles", recentFiles).toStringList();
+	recentFiles = settings.value("recentFiles", "").toString().split(",");
+	qDebug() << "recent files:" << recentFiles;
 
 	settings.endGroup();
 }
@@ -76,7 +77,7 @@ void AppSettings::save(QSettings& settings) const {
 
 	settings.beginGroup(mName);
 
-	settings.setValue("recentFiles", recentFiles);
+	settings.setValue("recentFiles", recentFiles.join(","));
 
 	settings.endGroup();
 }
@@ -118,7 +119,7 @@ AppSettings& Settings::app() {
 
 bool Settings::isPortable() const {
 
-	QFileInfo fi(QCoreApplication::applicationDirPath(), "settings.ini");
+	QFileInfo fi(QCoreApplication::applicationDirPath(), "pie-settings.ini");
 	return fi.absoluteFilePath() == settingsPath();
 }
 
@@ -127,12 +128,12 @@ QString Settings::settingsPath() const {
 	if (!mSettingsPath.isEmpty())
 		return mSettingsPath;
 
-	QFileInfo fi(QCoreApplication::applicationDirPath(), "settings.ini");
+	QFileInfo fi(QCoreApplication::applicationDirPath(), "pie-settings.ini");
 
 	if (fi.exists())
 		return fi.absoluteFilePath();
 
-	fi = QFileInfo(Utils::appDataPath(), "settings.ini");
+	fi = QFileInfo(Utils::appDataPath(), "pie-settings.ini");
 
 	return fi.absoluteFilePath();
 }

@@ -34,6 +34,7 @@
 
 #include "Settings.h"
 #include "ActionManager.h"
+#include "Utils.h"
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QListView>
@@ -112,7 +113,8 @@ void OpenFilesWidget::createLayout() {
 	QLabel* title = new QLabel(tr("Open a Collection"), this);
 	title->setAlignment(Qt::AlignHCenter);
 
-	QPushButton* pbOpen = new QPushButton(QIcon(":/pie/img/open.svg"), tr("Open"), this);
+	// TODO: check y we can't load svgs
+	QPushButton* pbOpen = new QPushButton(ColorManager::colorizePixmap(QPixmap(":/pie/img/open.png"), ColorManager::blue()), tr("Open"), this);
 	pbOpen->setToolTip(tr("Open a PIE Database file"));
 	pbOpen->setIconSize(QSize(96, 96));
 

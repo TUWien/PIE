@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/pie">
 		<file>stylesheet.css</file>
-		<file>img/open.svg</file>
+		<file>img/open.png</file>
 	</qresource>
 </RCC>

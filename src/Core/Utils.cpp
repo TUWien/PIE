@@ -46,6 +46,8 @@
 #include <QStandardPaths>
 #include <QUrl>
 #include <QDateTime>
+#include <QPixmap>
+#include <QPainter>
 
 #include <opencv2/core.hpp>
 #pragma warning(pop)
@@ -697,6 +699,31 @@ QColor ColorManager::alpha(const QColor & col, double a) {
 	c.setAlphaF(a);
 
 	return c;
+}
+
+/// <summary>
+/// Colorizes the pixmap.
+/// </summary>
+/// <param name="icon">The (gray) pixmap.</param>
+/// <param name="col">The destination color.</param>
+/// <param name="opacity">The opacity, if != 1 the color is alpha blended with the original color.</param>
+/// <returns>The colorized pixmap</returns>
+QPixmap ColorManager::colorizePixmap(const QPixmap& pm, const QColor& col, double opacity) {
+
+	if (pm.isNull())
+		return pm;
+
+	QPixmap pmc = pm.copy();
+	QPixmap cpm = pm.copy();
+	cpm.fill(col);
+
+	QPainter p(&pmc);
+	p.setRenderHint(QPainter::SmoothPixmapTransform);
+	p.setCompositionMode(QPainter::CompositionMode_SourceIn);
+	p.setOpacity(opacity);
+	p.drawPixmap(cpm.rect(), cpm);
+
+	return pmc;
 }
 
 }

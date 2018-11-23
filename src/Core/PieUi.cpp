@@ -29,7 +29,7 @@
  [4] https://nomacs.org
  *******************************************************************************************************/
 
-#include "PieUI.h"
+#include "PieUi.h"
 #include "Plot.h"
 #include "Utils.h"
 #include "PageData.h"
@@ -82,7 +82,7 @@ namespace pie {
 	void TabWidget::dragEnterEvent(QDragEnterEvent * ev) {
 
 		if (ev->mimeData()->hasUrls()) {
-
+				
 			for (const QUrl& url : ev->mimeData()->urls()) {
 
 				if (Utils::isValidFile(url.toLocalFile())) {
@@ -196,7 +196,7 @@ namespace pie {
 
 			// replace color placeholders
 			cssString.replace("INFO_COLOR", Utils::colorToString(ColorManager::lightGray()));
-			cssString.replace("HIGHLIGHT_LIGHT", Utils::colorToString(ColorManager::blue(0.5)));
+			cssString.replace("HIGHLIGHT_LIGHT", Utils::colorToString(ColorManager::blue(0.2)));
 			cssString.replace("HIGHLIGHT_COLOR", Utils::colorToString(ColorManager::blue()));
 			cssString.replace("SELECTION_LIGHT", Utils::colorToString(ColorManager::green(0.5)));
 			cssString.replace("SELECTION_COLOR", Utils::colorToString(ColorManager::green()));
@@ -238,7 +238,7 @@ namespace pie {
 		
 		DefaultSettings ds;
 		Settings::instance().save(ds);
-		qDebug() << "settings saved...";
+		qDebug() << "settings saved to" << Settings::instance().settingsPath();
 
 		QMainWindow::closeEvent(ev);
 	}
