@@ -35,9 +35,13 @@ add_dependencies(${PIE_BINARY_NAME} ${PIE_DLL_CORE_NAME})
 target_include_directories(${PIE_BINARY_NAME} 		PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_include_directories(${PIE_DLL_CORE_NAME} 	PRIVATE ${OpenCV_INCLUDE_DIRS})
 
-target_link_libraries(${PIE_BINARY_NAME} Qt5::Widgets Qt5::Gui Qt5::Network Qt5::Concurrent Qt5::Svg Qt5::WinExtras)
-target_link_libraries(${PIE_DLL_CORE_NAME} Qt5::Widgets Qt5::Gui Qt5::Network Qt5::Concurrent Qt5::Svg Qt5::WinExtras)
+target_link_libraries(${PIE_BINARY_NAME} Qt5::Widgets Qt5::Gui Qt5::Network Qt5::Concurrent Qt5::Svg)
+target_link_libraries(${PIE_DLL_CORE_NAME} Qt5::Widgets Qt5::Gui Qt5::Network Qt5::Concurrent Qt5::Svg)
 
+if (MSVC)
+	target_link_libraries(${PIE_BINARY_NAME} Qt5::WinExtras)
+	target_link_libraries(${PIE_DLL_CORE_NAME} Qt5::WinExtras)
+endif()
 
 # core flags
 set_target_properties(${PIE_DLL_CORE_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/libs/$<CONFIGURATION>)
