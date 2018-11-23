@@ -40,11 +40,11 @@
 #include <functional>
 #pragma warning(pop)
 
-#ifndef DllCoreExport
+#ifndef DllExport
 #ifdef DLL_CORE_EXPORT
-#define DllCoreExport Q_DECL_EXPORT
+#define DllExport Q_DECL_EXPORT
 #else
-#define DllCoreExport Q_DECL_IMPORT
+#define DllExport Q_DECL_IMPORT
 #endif
 #endif
 
@@ -55,7 +55,7 @@ class QSettings;
 
 namespace pie {	
 
-class DllCoreExport Region : public BaseElement {
+class DllExport Region : public BaseElement {
 
 public:
 	enum Type {
@@ -99,7 +99,7 @@ private:
 	Type mType;
 };
 
-class DllCoreExport ImageData : public BaseElement {
+class DllExport ImageData : public BaseElement {
 
 public:
 	ImageData();
@@ -113,7 +113,7 @@ private:
 	QSize mSize;
 };
 
-class DllCoreExport PageData : public BaseElement {
+class DllExport PageData : public BaseElement {
 
 public:
 	PageData();
@@ -134,7 +134,7 @@ private:
 	QVector<QSharedPointer<Region> > mRegions;
 };
 
-class DllCoreExport Collection {
+class DllExport Collection {
 
 public:
 	Collection(const QString& name = "");

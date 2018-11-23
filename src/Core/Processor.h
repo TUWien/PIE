@@ -40,11 +40,11 @@
 
 #pragma warning (disable: 4251)	// inlined Qt functions in dll interface
 
-#ifndef DllCoreExport
+#ifndef DllExport
 #ifdef DLL_CORE_EXPORT
-#define DllCoreExport Q_DECL_EXPORT
+#define DllExport Q_DECL_EXPORT
 #else
-#define DllCoreExport Q_DECL_IMPORT
+#define DllExport Q_DECL_IMPORT
 #endif
 #endif
 
@@ -110,13 +110,13 @@ namespace math {
 
 namespace cmp {
 
-	DllCoreExport double numRegions(const PageData* pd);
+	DllExport double numRegions(const PageData* pd);
 
-	DllCoreExport typedef double(*Manipulator)(const PageData* pd);
+	DllExport typedef double(*Manipulator)(const PageData* pd);
 }
 
 namespace test {
-	DllCoreExport bool Processor(const Collection& c);
+	DllExport bool Processor(const Collection& c);
 }
 
 }

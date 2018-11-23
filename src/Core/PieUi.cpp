@@ -38,6 +38,7 @@
 #include "Settings.h"
 #include "ActionManager.h"
 #include "Utils.h"
+#include "WidgetManager.h"
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QTabBar>
@@ -47,13 +48,14 @@
 #include <QFileInfo>
 #include <QApplication>
 #include <QDir>
+#include <QAction>
 #pragma warning(pop)
 
-#ifndef DllCoreExport
+#ifndef DllExport
 #ifdef DLL_CORE_EXPORT
-#define DllCoreExport Q_DECL_EXPORT
+#define DllExport Q_DECL_EXPORT
 #else
-#define DllCoreExport Q_DECL_IMPORT
+#define DllExport Q_DECL_IMPORT
 #endif
 #endif
 
@@ -63,12 +65,23 @@ namespace pie {
 
 		setObjectName("TabWidget");
 		tabBar()->setMovable(true);
+		tabBar()->setTabsClosable(true);
 		setAcceptDrops(true);
 
-		ActionManager& am = ActionManager::instance();
+		const ActionManager& am = ActionManager::instance();
 		addActions(am.fileActions().toList());
 		addActions(am.viewActions().toList());
 		addActions(am.toolsActions().toList());
+
+		const DialogManager& dm = DialogManager::instance();
+
+		// connects
+		connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(removeTab(int)));
+
+		connect(&dm, SIGNAL(loadFileSignal(const QString&)), this, SLOT(loadFile(const QString&)));
+		
+		connect(am.action(ActionManager::view_new_tab), SIGNAL(triggered()), this, SLOT(newTab()));
+		connect(am.action(ActionManager::view_close_tab), SIGNAL(triggered()), this, SLOT(removeTab()));
 
 		newTab();
 	}
@@ -77,6 +90,8 @@ namespace pie {
 
 		WelcomeWidget* ww = new WelcomeWidget(this);
 		addTab(ww, tr("Welcome"));
+
+		connect(ww, SIGNAL(loadFileSignal(const QString&)), this, SLOT(loadFile(const QString&)));
 	}
 
 	void TabWidget::dragEnterEvent(QDragEnterEvent * ev) {
@@ -123,15 +138,41 @@ namespace pie {
 		}
 
 		PlotWidget* pw = new PlotWidget(db.collection(), this);
-		addTab(pw, pw->title());
+		
+		addTab(pw, pw->title(), true);
 
 		return true;
 	}
 
-	int TabWidget::addTab(QWidget* w, const QString& info) {
+	int TabWidget::addTab(QWidget* w, const QString& info, bool selected) {
+
+
+		int ci = currentIndex();
+		if (ci != -1 && currentWidget()->objectName() == "WelcomeWidget")
+			removeTab(currentIndex(), true);
 
 		int ni = QTabWidget::addTab(w, QIcon(":/pie/img/pie-icon.png"), info);
+		if (selected && ni != -1)
+			QTabWidget::setCurrentIndex(ni);
+
 		return ni;
+	}
+
+	void TabWidget::removeTab(int index, bool force) {
+
+		if (index == -1)
+			index = currentIndex();
+
+		QWidget* w = widget(index);
+
+		// free up space if a tab is closed
+		if (w)
+			w->deleteLater();
+
+		QTabWidget::removeTab(index);
+
+		if (!count() && !force)
+			newTab();
 	}
 
 	bool TabWidget::loadFromMime(const QMimeData * mimeData) {
@@ -163,6 +204,7 @@ namespace pie {
 	// -------------------------------------------------------------------- MainWindow 
 	MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags flags) : QMainWindow(parent, flags) {
 
+		setObjectName("MainWindow");
 		createLayout();
 		createMenu();
 		loadStyleSheet();

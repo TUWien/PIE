@@ -93,27 +93,27 @@ QMenu* ActionManager::toolsMenu(QWidget* parent /* = 0 */) const {
 	return m;
 }
 
-QAction* ActionManager::action(FileMenuActions action) {
+QAction* ActionManager::action(FileMenuActions action) const {
 	return mFileAction[action];
 }
 
-QAction* ActionManager::action(ViewMenuActions action) {
+QAction* ActionManager::action(ViewMenuActions action) const {
 	return mViewAction[action];
 }
 
-QAction* ActionManager::action(ToolsMenuActions action) {
+QAction* ActionManager::action(ToolsMenuActions action) const {
 	return mToolsAction[action];
 }
 
-QVector<QAction*> ActionManager::fileActions() {
+QVector<QAction*> ActionManager::fileActions() const {
 	return mFileAction;
 }
 
-QVector<QAction*> ActionManager::viewActions() {
+QVector<QAction*> ActionManager::viewActions() const {
 	return mViewAction;
 }
 
-QVector<QAction*> ActionManager::toolsActions() {
+QVector<QAction*> ActionManager::toolsActions() const {
 	return mToolsAction;
 }
 

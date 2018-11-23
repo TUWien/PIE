@@ -42,11 +42,11 @@
 #pragma warning (disable: 4251)	// inlined Qt functions in dll interface
 #pragma warning (disable: 4714)	// force inline
 
-#ifndef DllCoreExport
+#ifndef DllExport
 #ifdef DLL_CORE_EXPORT
-#define DllCoreExport Q_DECL_EXPORT
+#define DllExport Q_DECL_EXPORT
 #else
-#define DllCoreExport Q_DECL_IMPORT
+#define DllExport Q_DECL_IMPORT
 #endif
 #endif
 
@@ -66,7 +66,7 @@ namespace pie {
 #define WHO_IS_CUTE "Anna"
 
 // read defines
-class DllCoreExport Utils {
+class DllExport Utils {
 
 public:
 	static Utils& instance();
@@ -114,7 +114,7 @@ private:
 	Utils(const Utils&);
 };
 
-class DllCoreExport Converter {
+class DllExport Converter {
 
 public:
 	static QPolygon stringToPoly(const QString& pointList);
@@ -133,7 +133,7 @@ public:
 * This class is designed to measure the time of a method, especially
 * intervals and the total time can be measured.
 **/
-class DllCoreExport Timer {
+class DllExport Timer {
 
 public:
 
@@ -142,8 +142,8 @@ public:
 	**/
 	Timer();
 
-	friend DllCoreExport QDataStream& operator<<(QDataStream& s, const Timer& t);
-	friend DllCoreExport QDebug operator<< (QDebug d, const Timer &t);
+	friend DllExport QDataStream& operator<<(QDataStream& s, const Timer& t);
+	friend DllExport QDebug operator<< (QDebug d, const Timer &t);
 
 	QString getTotal() const;
 	virtual QDataStream& put(QDataStream& s) const;
@@ -157,22 +157,22 @@ protected:
 
 namespace ColorManager {
 
-	DllCoreExport QColor randColor(double alpha = 1.0);
-	DllCoreExport QColor getColor(int idx, double alpha = 1.0);
-	DllCoreExport QVector<QColor> colors();
+	DllExport QColor randColor(double alpha = 1.0);
+	DllExport QColor getColor(int idx, double alpha = 1.0);
+	DllExport QVector<QColor> colors();
 
-	DllCoreExport QColor lightGray(double alpha = 1.0);
-	DllCoreExport QColor darkGray(double alpha = 1.0);
-	DllCoreExport QColor red(double alpha = 1.0);
-	DllCoreExport QColor green(double alpha = 1.0);
-	DllCoreExport QColor blue(double alpha = 1.0);
-	DllCoreExport QColor pink(double alpha = 1.0);
-	DllCoreExport QColor white(double alpha = 1.0);
-	DllCoreExport QColor black(double alpha = 1.0);
+	DllExport QColor lightGray(double alpha = 1.0);
+	DllExport QColor darkGray(double alpha = 1.0);
+	DllExport QColor red(double alpha = 1.0);
+	DllExport QColor green(double alpha = 1.0);
+	DllExport QColor blue(double alpha = 1.0);
+	DllExport QColor pink(double alpha = 1.0);
+	DllExport QColor white(double alpha = 1.0);
+	DllExport QColor black(double alpha = 1.0);
 
-	DllCoreExport QColor alpha(const QColor& col, double a);
+	DllExport QColor alpha(const QColor& col, double a);
 
-	DllCoreExport QPixmap colorizePixmap(const QPixmap& pm, const QColor& col, double opacity = 1.0);
+	DllExport QPixmap colorizePixmap(const QPixmap& pm, const QColor& col, double opacity = 1.0);
 
 	// add your favorite colors here
 }

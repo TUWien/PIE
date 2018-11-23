@@ -652,7 +652,7 @@ QColor ColorManager::red(double alpha) {
 /// </summary>
 /// <param name="alpha">Optional alpha [0 1].</param>
 /// <returns></returns>
-DllCoreExport QColor ColorManager::green(double alpha) {
+DllExport QColor ColorManager::green(double alpha) {
 
 	return QColor(120, 192, 167, qRound(alpha * 255));
 }

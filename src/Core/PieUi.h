@@ -38,11 +38,11 @@
 
 #pragma warning (disable: 4251)	// inlined Qt functions in dll interface
 
-#ifndef DllCoreExport
+#ifndef DllExport
 #ifdef DLL_CORE_EXPORT
-#define DllCoreExport Q_DECL_EXPORT
+#define DllExport Q_DECL_EXPORT
 #else
-#define DllCoreExport Q_DECL_IMPORT
+#define DllExport Q_DECL_IMPORT
 #endif
 #endif
 
@@ -55,29 +55,27 @@ namespace pie {
 
 	class PlotWidget;
 
-	class DllCoreExport TabWidget : public QTabWidget {
+	class DllExport TabWidget : public QTabWidget {
 		Q_OBJECT
 
 	public:
 		TabWidget(QWidget* parent = 0);
 
 	public slots:
-	//	void removeTab(int index = -1);
+		void removeTab(int index = -1, bool force = false);
 	//	void tabChanged(int index);
-	//	bool loadFile(const QString& filePath, const QString& day = "", const QString& tube = "", int ind = -1);
-	//	//void showWelcome();
-		int addTab(QWidget* w, const QString& info = tr("New Tab"));
+		int addTab(QWidget* w, const QString& info = tr("New Tab"), bool selected = false);
 		void newTab();
+		bool loadFile(const QString& filePath);
 
 	private:
 		void dragEnterEvent(QDragEnterEvent* ev);
 		void dropEvent(QDropEvent* ev);
-		bool loadFile(const QString& filePath);
 
 		bool loadFromMime(const QMimeData* mimeData);
 	};
 
-	class DllCoreExport MainWindow : public QMainWindow {
+	class DllExport MainWindow : public QMainWindow {
 		Q_OBJECT
 
 	public:

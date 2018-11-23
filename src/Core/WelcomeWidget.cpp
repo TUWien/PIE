@@ -132,6 +132,7 @@ void OpenFilesWidget::createLayout() {
 // DkStartWidget --------------------------------------------------------------------
 WelcomeWidget::WelcomeWidget(QWidget* parent) : QWidget(parent) {
 	
+	setObjectName("WelcomeWidget");
 	createLayout();
 	updateInfo();
 }

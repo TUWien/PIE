@@ -38,11 +38,11 @@
 
 #pragma warning (disable: 4251)	// inlined Qt functions in dll interface
 
-#ifndef DllCoreExport
+#ifndef DllExport
 #ifdef DLL_CORE_EXPORT
-#define DllCoreExport Q_DECL_EXPORT
+#define DllExport Q_DECL_EXPORT
 #else
-#define DllCoreExport Q_DECL_IMPORT
+#define DllExport Q_DECL_IMPORT
 #endif
 #endif
 
@@ -54,7 +54,7 @@ namespace pie {
 
 namespace net {
 
-	DllCoreExport QByteArray download(const QString& url, bool* ok = 0);
+	DllExport QByteArray download(const QString& url, bool* ok = 0);
 }
 
 }

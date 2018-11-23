@@ -36,11 +36,11 @@
 #include <QObject>
 #pragma warning(pop)
 
-#ifndef DllCoreExport
+#ifndef DllExport
 #ifdef DLL_CORE_EXPORT
-#define DllCoreExport Q_DECL_EXPORT
+#define DllExport Q_DECL_EXPORT
 #else
-#define DllCoreExport Q_DECL_IMPORT
+#define DllExport Q_DECL_IMPORT
 #endif
 #endif
 
@@ -50,16 +50,16 @@ namespace pie {
 
 // read defines
 
-class DllCoreExport BaseElement {
+class DllExport BaseElement {
 
 public:
 	BaseElement(const QString& id = QString());
 
-	DllCoreExport friend bool operator==(const BaseElement& l, const QString& id);
-	DllCoreExport friend bool operator==(const BaseElement& l, const BaseElement& r);
-	DllCoreExport friend bool operator!=(const BaseElement& l, const BaseElement& r);
-	DllCoreExport friend QDataStream& operator<<(QDataStream& s, const BaseElement& e);
-	DllCoreExport friend QDebug operator<< (QDebug d, const BaseElement &e);
+	DllExport friend bool operator==(const BaseElement& l, const QString& id);
+	DllExport friend bool operator==(const BaseElement& l, const BaseElement& r);
+	DllExport friend bool operator!=(const BaseElement& l, const BaseElement& r);
+	DllExport friend QDataStream& operator<<(QDataStream& s, const BaseElement& e);
+	DllExport friend QDebug operator<< (QDebug d, const BaseElement &e);
 
 	void setId(const QString& id);
 	QString id() const;

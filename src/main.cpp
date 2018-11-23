@@ -44,6 +44,7 @@
 #include "Utils.h"
 #include "DatabaseLoader.h"
 #include "PieUi.h"
+#include "Settings.h"
 
 #if defined(_MSC_BUILD) && !defined(QT_NO_DEBUG_OUTPUT) // fixes cmake bug - really release uses subsystem windows, debug and release subsystem console
 #pragma comment (linker, "/SUBSYSTEM:CONSOLE")
@@ -91,6 +92,9 @@ int main(int argc, char** argv) {
 
 	// apply debug settings - convenience if you don't want to always change the cmd args
 	//applyDebugSettings(dc);
+
+	pie::DefaultSettings ds;
+	pie::Settings::instance().app().load(ds);
 	
 	qDebug() << "lol <-- help me, I am drowning";
 

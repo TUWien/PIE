@@ -42,12 +42,10 @@
 #pragma warning(disable: 4251)	// TODO: remove
 
 #ifndef DllExport
-#ifdef DK_DLL_EXPORT
+#ifdef DLL_CORE_EXPORT
 #define DllExport Q_DECL_EXPORT
-#elif defined(DK_DLL_IMPORT)
-#define DllExport Q_DECL_IMPORT
 #else
-#define DllExport
+#define DllExport Q_DECL_IMPORT
 #endif
 #endif
 

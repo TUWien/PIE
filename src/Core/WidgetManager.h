@@ -33,8 +33,7 @@
 #pragma once
 
 #pragma warning(push, 0)	// no warnings from includes
-#include <QSharedPointer>
-#include <QVector>
+#include <QObject>
 #pragma warning(pop)
 
 #pragma warning(disable: 4251)	// disable dll interface warning
@@ -47,87 +46,32 @@
 #endif
 #endif
 
-class QAction;
-class QMenu;
-class QSettings;
+class QWidget;
 
 namespace pie {
 
-class DllExport ActionManager {
+	namespace wm {
+		QWidget* dialogParent();
+	}
 
-public:
-	static ActionManager& instance();
-	~ActionManager();
+	class DialogManager : public QObject {
+		Q_OBJECT
 
-	enum FileMenuActions {
-		file_open_database,
+	public:
 		
-		file_end,
+		static DialogManager& instance();
+
+		DialogManager(const DialogManager&) = delete;
+		void operator=(const DialogManager&) = delete;
+
+	signals:
+		void loadFileSignal(const QString& filePath) const;
+
+	public slots:
+		void openDialog();
+
+	private:
+		DialogManager();
 	};
-
-	enum ViewMenuActions {
-
-		view_zoom_in,
-		view_zoom_out,
-
-		view_new_tab,
-		view_close_tab,
-
-		view_decrease_num_plots,
-		view_increase_num_plots,
-
-		view_end
-	};
-
-	enum ToolsMenuActions {
-		tools_about,
-
-		// hidden
-		tools_reverse_solar_system,
-
-		tools_end
-	};
-
-	enum shortcuts {
-
-		// file shortcuts
-		//sc_open			= Qt::CTRL + Qt::SHIFT + Qt::Key_O,
-		sc_view_zoom_in = Qt::Key_Plus,
-		sc_view_zoom_out = Qt::Key_Minus,
-		sc_view_decrease_num_plots = Qt::CTRL + Qt::Key_Plus,	// decreasing numbers -> increases size (that's why it is plus)
-		sc_view_increase_num_plots = Qt::CTRL + Qt::Key_Minus,
-
-		sc_view_new_tab = Qt::CTRL + Qt::Key_T,
-		sc_view_close_tab = Qt::CTRL + Qt::Key_W,
-
-		sc_tools_solar = Qt::Key_R,
-
-		sc_end
-	};
-
-	QMenu* fileMenu(QWidget* parent = 0) const;
-	QMenu* viewMenu(QWidget* parent = 0) const;
-	QMenu* toolsMenu(QWidget* parent = 0) const;
-
-	QAction* action(FileMenuActions action) const;
-	QAction* action(ViewMenuActions action) const;
-	QAction* action(ToolsMenuActions action) const;
-
-	QVector<QAction*> fileActions() const;
-	QVector<QAction*> viewActions() const;
-	QVector<QAction*> toolsActions() const;
-
-protected:
-	ActionManager();
-	ActionManager(ActionManager const&);	// remove
-	void operator=(ActionManager const&);	// remove
-	void init();
-	void createActions();
-	void connectDefaultActions();
-
-	QVector<QAction*> mFileAction;
-	QVector<QAction*> mViewAction;
-	QVector<QAction*> mToolsAction;
-};
 
 }

@@ -58,7 +58,8 @@ void AppSettings::defaultSettings() {
 void AppSettings::addRecentFile(const QString& filePath) {
 	
 	recentFiles.push_front(filePath);
-
+	recentFiles.removeDuplicates();
+	
 	if (recentFiles.size() > 50)
 		recentFiles.pop_back();
 }
@@ -68,7 +69,7 @@ void AppSettings::load(QSettings& settings) {
 	settings.beginGroup(mName);
 
 	recentFiles = settings.value("recentFiles", "").toString().split(",");
-	qDebug() << "recent files:" << recentFiles;
+	recentFiles.removeAll("");
 
 	settings.endGroup();
 }
