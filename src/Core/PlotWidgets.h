@@ -72,7 +72,6 @@ namespace pie {
 		void mouseReleaseEvent(QMouseEvent *ev);
 		void contextMenuEvent(QContextMenuEvent *ev);
 		void openMenu(const QPoint& pos);
-
 	};
 
 	class DllExport MenuButton : public QPushButton {

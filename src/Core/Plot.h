@@ -115,8 +115,7 @@ namespace pie {
 		virtual void setSelected(bool selected);
 
 	public slots:
-		//void axisIndexChanged(const QPoint& axisIndex);
-		//virtual void setAxisIndex(const QPoint& index);
+		virtual void setAxisIndex(const QPoint& index);
 		void setMinimumSize(const QSize& size);
 
 	protected:

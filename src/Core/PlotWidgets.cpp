@@ -31,6 +31,7 @@
 
 #include "PlotWidgets.h"
 #include "Utils.h"
+#include "Processor.h"
 
 #pragma warning(disable: 4714)	// disable force inline warnings from Qt
 
@@ -54,9 +55,7 @@
 namespace pie {
 
 	// AxisButton --------------------------------------------------------------------
-	AxisButton::AxisButton(const QString& text /* = QString */, Qt::Orientation orientation, QWidget* parent) : OrButton(text, orientation, parent) {
-
-		connect(this, SIGNAL(clicked()), this, SLOT(actionClicked()));
+	AxisButton::AxisButton(const QString& text, Qt::Orientation orientation, QWidget* parent) : OrButton(text, orientation, parent) {
 	}
 
 	void AxisButton::mousePressEvent(QMouseEvent *ev) {
@@ -82,12 +81,15 @@ namespace pie {
 
 		QMenu* m = new QMenu(tr("Axis"), this);
 
-		//for (const DkDimParam& p : mFcs->header().param()) {
+		for (int idx = 0; idx < AbstractMapper::m_end; idx++) {
 
-		//	QAction* a = new QAction(p.fullName(), this);
-		//	connect(a, SIGNAL(triggered()), this, SLOT(actionClicked()));
-		//	m->addAction(a);
-		//}
+			auto map = AbstractMapper::create((AbstractMapper::Type)idx);
+
+			QAction* a = new QAction(map->name(), this);
+			a->setData(idx);
+			connect(a, SIGNAL(triggered()), this, SLOT(actionClicked()));
+			m->addAction(a);
+		}
 
 		m->exec(pos);
 		m->deleteLater();
@@ -96,31 +98,22 @@ namespace pie {
 
 	void AxisButton::actionClicked() {
 
-		//QAction* sender = static_cast<QAction*>(this->sender());
+		QAction* action = static_cast<QAction*>(this->sender());
 
+		if (!action)
+			return;
 
-		//QVector<DkDimParam> param = mFcs->header().param();
+		QPoint p(-1,-1);
+		int idx = action->data().toInt();
 
-		//for (int idx = 0; idx < param.size(); idx++) {
+		if (mOrientation == Qt::Horizontal)
+			p.setX(idx);
+		else
+			p.setY(idx);
 
-		//	// find the action and send the corresponding event
-		//	if (param[idx].fullName() == sender->text()) {
-
-		//		QPoint p;
-
-		//		if (mOrientation == Qt::Horizontal) {
-		//			p.setX(idx);
-		//			p.setY(-1);
-		//		}
-		//		else {
-		//			p.setX(-1);
-		//			p.setY(idx);
-		//		}
-
-		//		emit changeAxisIndex(p);
-		//		break;
-		//	}
-		//}
+		setText(action->text());
+		
+		emit changeAxisIndex(p);
 	}
 
 	// MenuButton --------------------------------------------------------------------

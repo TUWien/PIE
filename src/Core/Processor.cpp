@@ -33,6 +33,9 @@
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QDebug>
+
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
 #pragma warning(pop)
 
 namespace pie {
@@ -58,6 +61,100 @@ namespace pie {
 		}
 
 		return true;
+	}
+	
+	// -------------------------------------------------------------------- DisplayConverter 
+	DisplayConverter::DisplayConverter(QSharedPointer<Collection> collection) {
+		mCollection = collection;
+	}
+
+	cv::Mat DisplayConverter::map(QSharedPointer<AbstractMapper> mapper) const {
+		return mapper->process(mCollection.data());
+	}
+
+	// -------------------------------------------------------------------- Mapper 
+	AbstractMapper::AbstractMapper() {
+	}
+
+	QSharedPointer<AbstractMapper> AbstractMapper::create(const Type& type) {
+
+		switch (type) {
+		case m_reg_width:	return QSharedPointer<WidthMapper>::create();
+		case m_reg_height:	return QSharedPointer<HeightMapper>::create();
+		case m_reg_area:	return QSharedPointer<AreaMapper>::create();
+		}
+
+		if (type != m_undefined)
+			qWarning() << "[AbstractMapper] unknown type:" << type;
+		return QSharedPointer<AbstractMapper>();
+	}
+
+	AbstractMapper::Type AbstractMapper::type() const {
+		return mType;
+	}
+
+	QString AbstractMapper::name() const {
+		return mName;
+	}
+
+	cv::Mat AbstractMapper::process(Collection * c) const {
+		
+		if (!c) {
+			qWarning() << "cannot process empty collection";
+			return cv::Mat();
+		}
+
+		std::function<double(const Region&)> f = processor();
+		//auto f = [&](const Region& r) { return r.width(); };
+
+		// OpenGL only knows floats
+		cv::Mat dv(1, c->size(), CV_32FC1);
+		float* px = dv.ptr<float>();
+
+		for (auto p : c->pages()) {
+			*px = (float)p->averageRegion(f);
+			px++;
+		}
+
+		cv::normalize(dv, dv, 0, 1, cv::NORM_MINMAX);
+		dv *= 2.0f;
+		dv -= 1.0f;
+
+		return dv;
+	}
+
+	//std::function<double(const Region&)> AbstractMapper::processor() const {
+	//	qDebug() << "ulalala...";
+	//	return std::function<double(const Region&)>();
+	//}
+
+	// -------------------------------------------------------------------- WidthMapper 
+	WidthMapper::WidthMapper() {
+		mName = QObject::tr("Region Width");
+		mType = m_reg_width;
+	}
+
+	std::function<double(const Region&)> WidthMapper::processor() const {
+		return [&](const Region& r) { return r.width(); };
+	}
+
+	// -------------------------------------------------------------------- HeightMapper 
+	HeightMapper::HeightMapper() {
+		mName = QObject::tr("Region Height");
+		mType = m_reg_height;
+	}
+	std::function<double(const Region&)> HeightMapper::processor() const {
+		return [&](const Region& r) { return r.height(); };
+	}
+
+	// -------------------------------------------------------------------- AreaMapper 
+	AreaMapper::AreaMapper() {
+		mName = QObject::tr("Region Area");
+		mType = m_reg_area;
+	}
+
+	std::function<double(const Region&)> AreaMapper::processor() const {
+		return [&](const Region& r) { return r.area(); };
 	}
 }
 

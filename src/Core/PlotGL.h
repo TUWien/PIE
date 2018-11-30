@@ -39,6 +39,8 @@
 #include <QWidget>
 #include <QOpenGLWidget>
 #include <QAction>
+
+#include <opencv2/core.hpp>
 #pragma warning(pop)
 
 #pragma warning (disable: 4251)	// inlined Qt functions in dll interface
@@ -52,16 +54,17 @@
 #endif
 
 // Qt defines
-class DotPlotParams;
-class DotPlot;
 
 namespace pie {
+
+	class AbstractMapper;
+	class DotPlot;
 
 	class DllExport DotViewPort : public QOpenGLWidget {
 		Q_OBJECT
 
 	public:
-		DotViewPort(DotPlotParams* params, DotPlot* parent = 0);
+		DotViewPort(QSharedPointer<Collection> collection, DotPlotParams* params, DotPlot* parent = 0);
 	virtual ~DotViewPort() {}
 
 		void moveView(const QPointF& dxy);
@@ -72,7 +75,7 @@ namespace pie {
 	signals:
 
 	public slots:
-		//virtual void setAxisIndex(const QPoint& dims);
+		virtual void setAxisIndex(const QPoint& dims);
 		void resetView();
 		void zoomIn();
 		void zoomOut();
@@ -86,7 +89,7 @@ namespace pie {
 
 		virtual bool drawGL();
 		virtual bool drawPoints();
-		//bool drawPointsLabels(const cv::Mat& data, QSharedPointer<DkFcsData> mFcs) const;
+		bool drawPointsLabels() const;
 		//bool drawPointsSelection(const cv::Mat& data, const DkSelectionModel& model) const;
 
 		// annotations
@@ -94,7 +97,7 @@ namespace pie {
 		void drawEmpty(QPainter& p);
 		//void drawSunSystem(QPainter& p, DkSolarSystem* system) const;
 		//void drawSolarSystemGL(DkSolarSystem* system) const;
-		void drawDimArrows(QPainter& p, const QPoint& axisDims) const;
+		void drawDimArrows(QPainter& p) const;
 		void drawArrow(QPainter& p, const QPoint& start, const QPoint& end, double angle) const;
 		//QString mapMouseCoords(const QPoint& coords) const;
 
@@ -117,6 +120,12 @@ namespace pie {
 		DotPlot* mParent;
 
 		bool mIsSelected = false;
+
+		QSharedPointer<AbstractMapper> mXMapper;
+		QSharedPointer<AbstractMapper> mYMapper;
+
+		cv::Mat mXData;
+		cv::Mat mYData;
 
 		//QSharedPointer<DkSelection> mActiveSelection;
 	};

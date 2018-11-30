@@ -199,10 +199,9 @@ namespace pie {
 	}
 
 	// -------------------------------------------------------------------- BasePlot 
-	BasePlot::BasePlot(QSharedPointer<Collection> collection, QWidget* parent /* = 0 */) : Widget(parent) {
+	BasePlot::BasePlot(QWidget* parent /* = 0 */) : Widget(parent) {
 
 		setFocusPolicy(Qt::StrongFocus);
-		mCollection = collection;
 
 		// connects
 		ActionManager& m = ActionManager::instance();

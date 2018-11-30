@@ -106,6 +106,74 @@ namespace math {
 	}
 }
 
+class DllExport AbstractMapper {
+
+public:
+	enum Type {
+		m_undefined = -1,
+		m_reg_width,
+		m_reg_height,
+		m_reg_area,
+
+		m_end
+	};
+
+	AbstractMapper();
+	static QSharedPointer<AbstractMapper> create(const Type& type);
+
+	Type type() const;
+	QString name() const;
+	cv::Mat process(Collection* c) const;
+
+protected:
+	virtual std::function<double(const Region&)> processor() const = 0;
+
+	QString mName;
+	Type mType = m_undefined;
+};
+
+class DllExport WidthMapper : public AbstractMapper {
+
+public:
+	WidthMapper();
+
+protected:
+	virtual std::function<double(const Region&)> processor() const;
+
+};
+
+class DllExport HeightMapper : public AbstractMapper {
+
+public:
+	HeightMapper();
+
+protected:
+	virtual std::function<double(const Region&)> processor() const;
+
+};
+
+class DllExport AreaMapper : public AbstractMapper {
+
+public:
+	AreaMapper();
+
+protected:
+	virtual std::function<double(const Region&)> processor() const;
+
+};
+
+class DllExport DisplayConverter {
+
+public:
+	DisplayConverter(QSharedPointer<Collection> collection);
+
+	cv::Mat map(QSharedPointer<AbstractMapper> mapper) const;
+
+private:
+
+	QSharedPointer<Collection> mCollection;
+
+};
 
 
 namespace cmp {

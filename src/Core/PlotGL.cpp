@@ -34,6 +34,7 @@
 #include "WidgetManager.h"
 #include "ActionManager.h"
 #include "Utils.h"
+#include "Processor.h"
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QDebug>
@@ -44,8 +45,9 @@
 
 namespace pie {
 
-	DotViewPort::DotViewPort(DotPlotParams* params, DotPlot* parent) : QOpenGLWidget(parent) {
+	DotViewPort::DotViewPort(QSharedPointer<Collection> collection, DotPlotParams* params, DotPlot* parent) : QOpenGLWidget(parent) {
 
+		mCollection = collection;
 		mP = params;
 		mParent = parent;
 		setObjectName("DotViewPort");
@@ -71,7 +73,6 @@ namespace pie {
 
 		// member init
 		// turn point sprites on
-		//glEnable(GL_POINT_SPRITE);
 		glPointSize((GLfloat)mP->pointSize());
 
 		// turn alpha blending on
@@ -82,7 +83,7 @@ namespace pie {
 	void DotViewPort::resizeGL(int w, int h) {
 
 		// setup viewport, projection etc.:
-	//	glViewport(0, 0, (GLint)w, (GLint)h);	// doesn't do anything on linux...?
+		//	glViewport(0, 0, (GLint)w, (GLint)h);	// doesn't do anything on linux...?
 
 		//// next two lines should clear the buffer - but they don't
 		//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -171,14 +172,14 @@ namespace pie {
 
 		QString displayText;
 
-		if (mP->axisIndex().x() == -1 || mP->axisIndex().y() == -1)
+		if (!mXMapper || !mYMapper)
 			displayText = tr("Please select features.");
 
 		//// this should never happen
 		//if (!mBaseWidget->eventCount())
 		//	displayText = tr("Ich sehe gerade\nes ist ein bisschen\nwas durcheinander gekommen...");
 
-		drawDimArrows(p, mP->axisIndex());
+		drawDimArrows(p);
 
 		// currently vertical labels are always centered sorry for ignoring the style here...
 		QPen pen;
@@ -223,7 +224,7 @@ namespace pie {
 		p.fillPath(pathA, p.pen().brush());
 	}
 
-	void DotViewPort::drawDimArrows(QPainter& p, const QPoint& axisDims) const {
+	void DotViewPort::drawDimArrows(QPainter& p) const {
 
 		QPen arrowPen;
 		arrowPen.setWidth(2);
@@ -236,14 +237,14 @@ namespace pie {
 		QPoint as(rect().center() + QPoint(20, 20));
 		QPoint ae(rect().center().x(), rect().bottom());
 
-		if (axisDims.x() == -1)
+		if (!mXMapper)
 			drawArrow(p, as, ae, 180);
 
 		// draw arrow to vertical axis
 		as -= QPoint(40, 40);
 		ae = QPoint(rect().left(), rect().center().y());
 
-		if (axisDims.y() == -1)
+		if (!mYMapper)
 			drawArrow(p, as, ae, -90);
 
 		// restore pen
@@ -252,84 +253,70 @@ namespace pie {
 
 	bool DotViewPort::drawPoints() {
 
-		if (!mCollection || mP->axisIndex().x() == -1 || mP->axisIndex().y() == -1)
+		if (!mCollection || !mXMapper || !mYMapper)
 			return false;	// nothing todo here
 
-		glPointSize((GLfloat)mP->pointSize());
+		//glPointSize((GLfloat)mP->pointSize());
+		glPointSize(5);
 		glBegin(GL_POINTS);
-		
-		// TODO:p
-		//cv::Mat events = mFcs->data();
 
-		//bool success = drawPointsLabels(events, mFcs);
+		bool success = drawPointsLabels();
 		//if (success)
 		//	drawPointsSelection(events, *mFcs->selectionModel());
 
 		glEnd();
 
-		//return success;
-		return false;
+		return success;
 	}
 
-	//bool DotViewPort::drawPointsLabels(const cv::Mat& events, QSharedPointer<DkFcsData> fcs) const {
+	bool DotViewPort::drawPointsLabels() const {
 
-	//	float skipFactor = (mP->displayPercent() == 100) ? 0.f : 1.f - mP->displayPercent() / 100.f;
+		float skipFactor = (mP->displayPercent() == 100) ? 0.f : 1.f - mP->displayPercent() / 100.f;
 
-	//	QPoint dims = mP->axisIndex();
+		QPoint dims = mP->axisIndex();
 
-	//	if (dims.x() < 0 || dims.x() > events.cols || dims.y() < 0 || dims.y() > events.cols)
-	//		return false;	// illegal axis
+		if (!mXMapper || !mYMapper)
+			return false; // illegal axis
 
-	//	QVector<DkDimParam> params = mFcs->header().param(dims);
-	//	float mX = (float)params[0].logicle()->m()*0.5f;
-	//	float mY = (float)params[1].logicle()->m()*0.5f;
+		if (mXData.cols != mYData.cols)
+			return false;	// illegal data - out of sync?
 
-	//	QSharedPointer<DkEventGroupManager> groupManager = fcs->groupManager();
-	//	QSharedPointer<DkPdfGroupManager> gmmGroupManager = qSharedPointerDynamicCast<DkPdfGroupManager>(groupManager);
-	//	QVector<QSharedPointer<DkEventGroup> > groups = groupManager->eventGroups();
+		// TODO: add colors here
+		//for (int cIdx = 0; cIdx < groups.size(); cIdx++) {
 
-	//	// this is a sanity check
-	//	bool syncedData = groupManager->isSynced(events, false);
-	//	if (!syncedData)
-	//		qDebug() << "data is out of sync...";
+			//// hide current points
+			//if (!groups[cIdx]->visible())
+			//	continue;
 
-	//	// iterate over all gmm colors
-	//	// TODO make sure blasts are drawn last (for boolean gates...)
-	//	for (int cIdx = 0; cIdx < groups.size(); cIdx++) {
+			// set the color
+			const QColor& col = ColorManager::darkGray();//groups[cIdx]->color();
+			float alpha = col.alpha() == 255 ? mP->alpha() / 255.0f : col.alpha() / 255.0f;
+			glColor4f((GLfloat)col.redF(), (GLfloat)col.greenF(), (GLfloat)col.blueF(), (GLfloat)alpha);
 
-	//		// hide current points
-	//		if (!groups[cIdx]->visible())
-	//			continue;
+			int count = mXData.cols;
 
-	//		// set the color
-	//		const QColor& col = groups[cIdx]->color();
-	//		float alpha = col.alpha() == 255 ? mP->alpha() / 255.0f : col.alpha() / 255.0f;
-	//		glColor4f((GLfloat)col.redF(), (GLfloat)col.greenF(), (GLfloat)col.blueF(), (GLfloat)alpha);
+			const float* x = mXData.ptr<float>();
+			const float* y = mYData.ptr<float>();
 
-	//		// the 'all' group has an empty label vector
-	//		cv::Mat labels = groups[cIdx]->events();
-	//		const unsigned int* label = labels.ptr<unsigned int>();
-	//		int count = groups[cIdx]->empty() || !syncedData ? events.rows : labels.rows;
+			// draw the points
+			double skip = 0.0;
+			for (int idx = 0; idx < count; ++idx, skip += skipFactor) {
 
-	//		// draw the points
-	//		float skip = 0.f;
-	//		for (int rIdx = 0; rIdx < count; ++rIdx, skip += skipFactor) {
+				if (skip >= 1.0) {
+					skip -= 1.0;
+					continue;
+				}
 
-	//			if (skip >= 1.f) {
-	//				skip -= 1.f;
-	//				continue;
-	//			}
+				//// NOTE: syncedData implies that label[rIdx] is not valid - hence it must be checked _before_
+				//int dataIdx = labels.empty() || !syncedData || (int)label[rIdx] >= events.rows ? rIdx : label[rIdx];
+				//const float* sample = events.ptr<float>(dataIdx);
 
-	//			// NOTE: syncedData implies that label[rIdx] is not valid - hence it must be checked _before_
-	//			int dataIdx = labels.empty() || !syncedData || (int)label[rIdx] >= events.rows ? rIdx : label[rIdx];
-	//			const float* sample = events.ptr<float>(dataIdx);
+				glVertex3f(x[idx], y[idx], 1.0);
+			}
+		//}
 
-	//			glVertex3f(sample[dims.x()] / mX - 1.0f, sample[dims.y()] / mY - 1.0f, 0.0f);
-	//		}
-	//	}
-
-	//	return true;
-	//}
+		return true;
+	}
 
 	//bool DotViewPort::drawPointsSelection(const cv::Mat & events, const DkSelectionModel & model) const {
 
@@ -588,19 +575,26 @@ namespace pie {
 		return hasFocus() || (p && (p->hasFocus() || mIsSelected));
 	}
 
-	//void DotViewPort::setAxisIndex(const QPoint& dims) {
+	void DotViewPort::setAxisIndex(const QPoint& dims) {
 
-	//	mP->setAxisIndex(dims);
+		mP->setAxisIndex(dims);
 
-	//	// enrich with the name
-	//	QVector<DkDimParam> p = mFcs->header().param(mP->axisIndex());
+		if (dims.x() != AbstractMapper::m_undefined && (!mXMapper || mXMapper->type() != dims.x())) {
+			mXMapper = AbstractMapper::create((AbstractMapper::Type)dims.x());
+			mXData = mXMapper->process(mCollection.data());
+		}
 
-	//	if (dims.x() != -1)
-	//		mP->setXAxisName(p[0].preferredName());
-	//	if (dims.y() != -1)
-	//		mP->setYAxisName(p[1].preferredName());
+		if (dims.y() != AbstractMapper::m_undefined && (!mYMapper || mYMapper->type() != dims.y())) {
+			mYMapper = AbstractMapper::create((AbstractMapper::Type)dims.y());
+			mYData = mYMapper->process(mCollection.data());
+		}
 
-	//	update();
-	//}
+		if (mXMapper)
+			mP->setXAxisName(mXMapper->name());
+		if (mYMapper)
+			mP->setYAxisName(mYMapper->name());
+
+		update();
+	}
 
 }

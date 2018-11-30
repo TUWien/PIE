@@ -134,7 +134,7 @@ namespace pie {
 		Q_OBJECT
 
 	public:
-		BasePlot(QSharedPointer<Collection> collection, QWidget* parent = 0);
+		BasePlot(QWidget* parent = 0);
 		virtual ~BasePlot();
 
 		bool isFullScreen() const;
@@ -147,7 +147,7 @@ namespace pie {
 		//virtual DkPlotParams* params() const = 0;
 
 	public slots:
-		//virtual void setAxisIndex(const QPoint& index) = 0;
+		virtual void setAxisIndex(const QPoint& index) = 0;
 		virtual void closeRequested() const;
 
 	signals:
@@ -166,8 +166,6 @@ namespace pie {
 
 		bool mSelected = false;
 		bool mFullScreen = false;
-
-		QSharedPointer<Collection> mCollection;
 	};
 
 }

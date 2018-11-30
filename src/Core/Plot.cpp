@@ -151,22 +151,22 @@ namespace pie {
 	}
 
 	// DotPlot --------------------------------------------------------------------
-	DotPlot::DotPlot(QSharedPointer<Collection> collection, QWidget* parent /* = 0 */) : BasePlot(collection, parent) {
+	DotPlot::DotPlot(QSharedPointer<Collection> collection, QWidget* parent /* = 0 */) : BasePlot(parent) {
 
 		mP = new DotPlotParams(this);
 		setObjectName("DotPlot");
 
+		mViewPort = new DotViewPort(collection, mP, this);
+		mViewPort->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+
 		createLayout();
 
 		// viewport connects
-		//connect(mXAxisLabel, SIGNAL(changeAxisIndex(const QPoint&)), viewport(), SLOT(setAxisIndex(const QPoint&)));
-		//connect(mYAxisLabel, SIGNAL(changeAxisIndex(const QPoint&)), viewport(), SLOT(setAxisIndex(const QPoint&)));
+		connect(mXAxisLabel, SIGNAL(changeAxisIndex(const QPoint&)), viewport(), SLOT(setAxisIndex(const QPoint&)));
+		connect(mYAxisLabel, SIGNAL(changeAxisIndex(const QPoint&)), viewport(), SLOT(setAxisIndex(const QPoint&)));
 	}
 
 	void DotPlot::createLayout() {
-
-		mViewPort = new DotViewPort(mP, this);
-		mViewPort->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
 		mXAxisLabel = new AxisButton(tr("Select"), Qt::Horizontal, this);
 		mXAxisLabel->setObjectName("axisLabel");
@@ -214,9 +214,9 @@ namespace pie {
 		BasePlot::setMinimumSize(size);
 	}
 
-	//void DotPlot::setAxisIndex(const QPoint& index) {
-	//	mViewPort->setAxisIndex(index);
-	//}
+	void DotPlot::setAxisIndex(const QPoint& index) {
+		mViewPort->setAxisIndex(index);
+	}
 
 	QPoint DotPlot::axisIndex() const {
 		return (mP) ? mP->axisIndex() : QPoint();
@@ -263,19 +263,6 @@ namespace pie {
 	//				mP->setAxisIndex(axis);
 	//		}
 	//	}
-	//}
-
-	//void DotPlot::axisIndexChanged(const QPoint& axisIndex) {
-
-	//	if (!mViewPort->fcsData())
-	//		return;
-
-	//	QVector<DkDimParam> p = mViewPort->fcsData()->header().param();
-
-	//	if (axisIndex.x() >= 0 && axisIndex.x() < p.size())
-	//		mXAxisLabel->setText(p[axisIndex.x()].preferredName());
-	//	if (axisIndex.y() >= 0 && axisIndex.y() < p.size())
-	//		mYAxisLabel->setText(p[axisIndex.y()].preferredName());
 	//}
 
 	DotViewPort* DotPlot::viewport() const {
