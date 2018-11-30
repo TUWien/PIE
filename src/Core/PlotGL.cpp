@@ -59,9 +59,6 @@ namespace pie {
 		connect(mP, SIGNAL(pointAlphaChanged()), this, SLOT(update()));
 		connect(mP, SIGNAL(displayPercentChanged()), this, SLOT(update()));
 		connect(mP, SIGNAL(axisIndexChanged()), this, SLOT(update()));
-		connect(mP, SIGNAL(showGridChanged()), this, SLOT(update()));
-		connect(mP, SIGNAL(showEllipseChanged()), this, SLOT(update()));
-		connect(mP, SIGNAL(showGatesChanged()), this, SLOT(update()));
 
 		ActionManager& m = ActionManager::instance();
 		connect(m.action(ActionManager::view_zoom_in), SIGNAL(triggered()), this, SLOT(zoomIn()));
@@ -142,7 +139,7 @@ namespace pie {
 
 		Timer dt;
 
-		QColor bg = ColorManager::background();
+		QColor bg = ThemeManager::instance().background();
 
 		// clean screen
 		glClearColor((GLclampf)bg.redF(), (GLclampf)bg.greenF(), (GLclampf)bg.blueF(), (GLclampf)bg.alphaF());

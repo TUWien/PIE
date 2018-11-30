@@ -38,9 +38,7 @@
 #include <QGridLayout>
 #include <QDebug>
 #include <QMouseEvent>
-#include <QApplication>
-#include <QDrag>
-#include <QMimeData>
+#include <QAction>
 #pragma warning(pop)
 
 namespace pie {
@@ -207,8 +205,8 @@ namespace pie {
 		mCollection = collection;
 
 		// connects
-		//ActionManager& m = ActionManager::instance();
-		//connect(m.action(DkActionManager::edit_remove_plot), SIGNAL(triggered()), this, SLOT(closeRequested()));
+		ActionManager& m = ActionManager::instance();
+		connect(m.action(m.edit_remove_plot), SIGNAL(triggered()), this, SLOT(closeRequested()));
 
 		setAcceptDrops(true);
 	}

@@ -79,6 +79,15 @@ public:
 		view_end
 	};
 
+	enum EditMenuActions {
+		edit_add_dot_plot,
+		edit_remove_plot,
+
+		edit_select_all,
+
+		edit_end
+	};
+
 	enum ToolsMenuActions {
 		tools_about,
 
@@ -100,6 +109,8 @@ public:
 		sc_view_new_tab = Qt::CTRL + Qt::Key_T,
 		sc_view_close_tab = Qt::CTRL + Qt::Key_W,
 
+		sc_add_dot_plot = Qt::CTRL + Qt::Key_D,
+
 		sc_tools_solar = Qt::Key_R,
 
 		sc_end
@@ -107,14 +118,17 @@ public:
 
 	QMenu* fileMenu(QWidget* parent = 0) const;
 	QMenu* viewMenu(QWidget* parent = 0) const;
+	QMenu* editMenu(QWidget* parent = 0) const;
 	QMenu* toolsMenu(QWidget* parent = 0) const;
 
 	QAction* action(FileMenuActions action) const;
 	QAction* action(ViewMenuActions action) const;
+	QAction* action(EditMenuActions action) const;
 	QAction* action(ToolsMenuActions action) const;
 
 	QVector<QAction*> fileActions() const;
 	QVector<QAction*> viewActions() const;
+	QVector<QAction*> editActions() const;
 	QVector<QAction*> toolsActions() const;
 
 protected:
@@ -127,6 +141,7 @@ protected:
 
 	QVector<QAction*> mFileAction;
 	QVector<QAction*> mViewAction;
+	QVector<QAction*> mEditAction;
 	QVector<QAction*> mToolsAction;
 };
 

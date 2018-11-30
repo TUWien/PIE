@@ -19,7 +19,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
- The READ project  has  received  funding  from  the European  Union’s  Horizon  2020
+ The READ project  has  received  funding  from  the European  Unionï¿½s  Horizon  2020
  research  and innovation programme under grant agreement No 674943
 
  related links:
@@ -157,7 +157,7 @@ namespace pie {
 			p.drawText(r, Qt::AlignHCenter | Qt::AlignVCenter, QPushButton::text());
 
 			// I gave up on the stylesheets here
-			if (objectName() == "DkTabLabel") {
+			if (objectName() == "TabLabel") {
 			
 				QColor col = isChecked() ? p.pen().color() : QColor(200, 200, 200);
 				p.setBrush(col);

@@ -74,9 +74,6 @@ namespace pie {
 			connect(param, SIGNAL(pointSizeChanged(int)), this, SLOT(setPointSize(int)));
 			connect(param, SIGNAL(displayPercentChanged(int)), this, SLOT(setDisplayPercent(int)));
 			connect(param, SIGNAL(pointAlphaChanged(int)), this, SLOT(setAlpha(int)));
-			connect(param, SIGNAL(showEllipseChanged(bool)), this, SLOT(setShowEllipse(bool)));
-			connect(param, SIGNAL(showGatesChanged(bool)), this, SLOT(setShowGates(bool)));
-			connect(param, SIGNAL(displayPercentChanged(int)), this, SLOT(setDisplayPercent(int)));
 		}
 	}
 
@@ -299,14 +296,13 @@ namespace pie {
 	}
 
 	// PlotWidget --------------------------------------------------------------------
-	PlotWidget::PlotWidget(QSharedPointer<Collection> collection, QWidget* parent /* = 0 */) : QWidget(parent) {
+	PlotWidget::PlotWidget(QSharedPointer<Collection> collection, QWidget* parent /* = 0 */) : Widget(parent) {
 
 		mCollection = collection;
 
 		createLayout();
 		setAcceptDrops(true);
 
-		addPlot();
 		addPlot();
 	}
 
@@ -390,7 +386,6 @@ namespace pie {
 		connect(plot, SIGNAL(clearSelectionSignal()), this, SLOT(clearSelection()));
 		connect(plot, SIGNAL(shiftSelectionSignal(bool)), this, SLOT(shiftSelection(bool)));
 		connect(plot, SIGNAL(startShiftSelectionSignal()), this, SLOT(startShiftSelection()));
-		connect(plot, SIGNAL(movePlot(size_t, size_t)), this, SLOT(movePlots(size_t, size_t)));
 	}
 
 	//void PlotWidget::clear() {

@@ -171,8 +171,6 @@ namespace ColorManager {
 	DllExport QColor pink(double alpha = 1.0);
 	DllExport QColor white(double alpha = 1.0);
 	DllExport QColor black(double alpha = 1.0);
-	DllExport QColor background(double alpha = 1.0);
-	DllExport QColor foreground(double alpha = 1.0);
 
 	DllExport QColor alpha(const QColor& col, double a);
 
@@ -180,6 +178,22 @@ namespace ColorManager {
 
 	// add your favorite colors here
 }
+
+class DllExport ThemeManager {
+
+public:
+	static ThemeManager& instance();
+	ThemeManager(const ThemeManager&) = delete;
+	void operator=(ThemeManager const&) = delete;
+
+	QColor background() const;
+	QColor foreground() const;
+
+private:
+	ThemeManager();
+
+	bool mDark = false;
+};
 
 /// <summary>
 /// Flags turns enums into typesave flags

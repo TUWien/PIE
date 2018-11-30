@@ -31,6 +31,8 @@
 
 #pragma once
 
+#include "BaseWidgets.h"
+
 #pragma warning(push, 0)	// no warnings from includes
 #include <QWidget>
 #pragma warning(pop)
@@ -47,7 +49,7 @@ class QStandardItemModel;
 
 namespace pie {
 
-class RecentFilesWidget : public QWidget {
+class RecentFilesWidget : public Widget {
 	Q_OBJECT
 
 public:
@@ -68,7 +70,7 @@ protected:
 	QStandardItemModel* mModel = 0;
 };
 
-class OpenFilesWidget : public QWidget {
+class OpenFilesWidget : public Widget {
 	Q_OBJECT
 
 public:
@@ -82,7 +84,7 @@ protected:
 };
 
 
-class WelcomeWidget : public QWidget {
+class WelcomeWidget : public Widget {
 	Q_OBJECT
 
 public:

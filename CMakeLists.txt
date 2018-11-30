@@ -88,7 +88,7 @@ include_directories (
 	)
 
 set (PIE_QRC
-		src/pie.qrc
+		resources/pie.qrc
 	)
 
 # TODO: uncomment if we ever need translations

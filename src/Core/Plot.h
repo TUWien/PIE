@@ -132,7 +132,7 @@ namespace pie {
 		MenuButton* mMenuButton;
 	};
 
-	class PlotWidget : public QWidget {
+	class PlotWidget : public Widget {
 		Q_OBJECT
 
 	public:

@@ -51,7 +51,7 @@
 namespace pie {
 
 // RecentFilesWidget --------------------------------------------------------------------
-RecentFilesWidget::RecentFilesWidget(QWidget* parent) : QWidget(parent) {
+RecentFilesWidget::RecentFilesWidget(QWidget* parent) : Widget(parent) {
 	
 	createLayout();
 }
@@ -104,7 +104,7 @@ void RecentFilesWidget::setRecentFiles(const QStringList& filePaths) {
 }
 
 // OpenFiles --------------------------------------------------------------------
-OpenFilesWidget::OpenFilesWidget(QWidget* parent) : QWidget(parent) {
+OpenFilesWidget::OpenFilesWidget(QWidget* parent) : Widget(parent) {
 	createLayout();
 }
 
@@ -130,7 +130,7 @@ void OpenFilesWidget::createLayout() {
 }
 
 // WelcomeWidget --------------------------------------------------------------------
-WelcomeWidget::WelcomeWidget(QWidget* parent) : QWidget(parent) {
+WelcomeWidget::WelcomeWidget(QWidget* parent) : Widget(parent) {
 	
 	setObjectName("WelcomeWidget");
 	createLayout();

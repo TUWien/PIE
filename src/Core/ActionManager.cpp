@@ -83,6 +83,18 @@ QMenu* ActionManager::viewMenu(QWidget* parent /* = 0 */) const {
 	return m;
 }
 
+QMenu * ActionManager::editMenu(QWidget * parent) const {
+
+	QMenu* m = new QMenu(QObject::tr("&Edit"), parent);
+
+	m->addAction(mEditAction[edit_add_dot_plot]);
+	m->addAction(mEditAction[edit_remove_plot]);
+
+	m->addAction(mEditAction[edit_select_all]);
+
+	return m;
+}
+
 QMenu* ActionManager::toolsMenu(QWidget* parent /* = 0 */) const {
 
 	QMenu* m = new QMenu(QObject::tr("&Tools"), parent);
@@ -101,6 +113,10 @@ QAction* ActionManager::action(ViewMenuActions action) const {
 	return mViewAction[action];
 }
 
+QAction * ActionManager::action(EditMenuActions action) const {
+	return mEditAction[action];
+}
+
 QAction* ActionManager::action(ToolsMenuActions action) const {
 	return mToolsAction[action];
 }
@@ -111,6 +127,10 @@ QVector<QAction*> ActionManager::fileActions() const {
 
 QVector<QAction*> ActionManager::viewActions() const {
 	return mViewAction;
+}
+
+QVector<QAction*> ActionManager::editActions() const {
+	return mEditAction;
 }
 
 QVector<QAction*> ActionManager::toolsActions() const {
@@ -160,6 +180,23 @@ void ActionManager::createActions() {
 	mViewAction[view_close_tab] = new QAction(QObject::tr("Close &Tab"), 0);
 	mViewAction[view_close_tab]->setToolTip(QObject::tr("Close the current tab."));
 	mViewAction[view_close_tab]->setShortcut(QKeySequence(sc_view_close_tab));
+
+	// edit actions
+	mEditAction.resize(edit_end);
+
+	mEditAction[edit_add_dot_plot] = new QAction(QPixmap(":/pie/img/dot-plot.png"), QObject::tr("Add &Dot Plot"), 0);
+	mEditAction[edit_add_dot_plot]->setShortcut(QKeySequence(sc_add_dot_plot));
+	mEditAction[edit_add_dot_plot]->setToolTip(QObject::tr("Add a new dot plot."));
+
+	mEditAction[edit_remove_plot] = new QAction(QObject::tr("&Remove Plot"), 0);
+	mEditAction[edit_remove_plot]->setShortcut(QKeySequence::Delete);
+	mEditAction[edit_remove_plot]->setToolTip(QObject::tr("Remove all selected plots."));
+
+	mEditAction[edit_select_all] = new QAction(QObject::tr("&Select All"), 0);
+	mEditAction[edit_select_all]->setShortcut(QKeySequence::SelectAll);
+	mEditAction[edit_select_all]->setToolTip(QObject::tr("Select all plots."));
+	mEditAction[edit_select_all]->setCheckable(true);
+	mEditAction[edit_select_all]->setChecked(false);
 
 	// tools actions
 	mToolsAction.resize(tools_end);

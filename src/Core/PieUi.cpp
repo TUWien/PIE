@@ -49,6 +49,8 @@
 #include <QApplication>
 #include <QDir>
 #include <QAction>
+#include <QMenuBar>
+
 #pragma warning(pop)
 
 #ifndef DllExport
@@ -71,13 +73,13 @@ namespace pie {
 		const ActionManager& am = ActionManager::instance();
 		addActions(am.fileActions().toList());
 		addActions(am.viewActions().toList());
+		addActions(am.editActions().toList());
 		addActions(am.toolsActions().toList());
 
 		const DialogManager& dm = DialogManager::instance();
 
 		// connects
 		connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(removeTab(int)));
-
 		connect(&dm, SIGNAL(loadFileSignal(const QString&)), this, SLOT(loadFile(const QString&)));
 		
 		connect(am.action(ActionManager::view_new_tab), SIGNAL(triggered()), this, SLOT(newTab()));
@@ -209,7 +211,13 @@ namespace pie {
 		loadStyleSheet();
 		loadSettings();
 
-		resize(500, 300);
+		QString iconPath = ":/pie/img/pie.png";
+		QIcon icon = QIcon(iconPath);
+
+		if (!icon.isNull())
+			setWindowIcon(icon);
+
+		resize(600, 300);
 	}
 
 	void MainWindow::createLayout() {
@@ -220,6 +228,13 @@ namespace pie {
 	}
 
 	void MainWindow::createMenu() {
+
+		ActionManager& manager = ActionManager::instance();
+
+		menuBar()->addMenu(manager.fileMenu(this));
+		menuBar()->addMenu(manager.viewMenu(this));
+		menuBar()->addMenu(manager.editMenu(this));
+		menuBar()->addMenu(manager.toolsMenu(this));
 	}
 
 	void MainWindow::loadStyleSheet() {
@@ -241,9 +256,16 @@ namespace pie {
 			cssString.replace("HIGHLIGHT_COLOR", Utils::colorToString(ColorManager::blue()));
 			cssString.replace("SELECTION_LIGHT", Utils::colorToString(ColorManager::pink(0.5)));
 			cssString.replace("SELECTION_COLOR", Utils::colorToString(ColorManager::pink()));
-			cssString.replace("BACKGROUND_COLOR", Utils::colorToString(ColorManager::background()));
-			cssString.replace("FOREGROUND_COLOR", Utils::colorToString(ColorManager::foreground()));
+			cssString.replace("BACKGROUND_COLOR", Utils::colorToString(ThemeManager::instance().background()));
+			cssString.replace("FOREGROUND_COLOR", Utils::colorToString(ThemeManager::instance().foreground()));
 
+			QPalette p = qApp->palette();
+			p.setColor(QPalette::Window, ThemeManager::instance().background());
+			p.setColor(QPalette::Base, ThemeManager::instance().background());
+			p.setColor(QPalette::WindowText, ThemeManager::instance().foreground());
+			p.setColor(QPalette::ButtonText, ThemeManager::instance().foreground());
+
+			qApp->setPalette(p);
 			qApp->setStyleSheet(cssString);
 			file.close();
 

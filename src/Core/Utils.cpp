@@ -693,14 +693,6 @@ QColor ColorManager::black(double alpha) {
 	return QColor(0, 0, 0, qRound(alpha * 255));
 }
 
-QColor ColorManager::background(double alpha) {
-	return QColor(255, 255, 255, qRound(alpha * 255));
-}
-
-DllExport QColor ColorManager::foreground(double alpha) {
-	return QColor(0, 0, 0, qRound(alpha * 255));
-}
-
 QColor ColorManager::alpha(const QColor & col, double a) {
 
 	QColor c = col;
@@ -732,6 +724,23 @@ QPixmap ColorManager::colorizePixmap(const QPixmap& pm, const QColor& col, doubl
 	p.drawPixmap(cpm.rect(), cpm);
 
 	return pmc;
+}
+// -------------------------------------------------------------------- ThemeManager 
+ThemeManager & ThemeManager::instance() {
+	
+	static ThemeManager i;
+	return i;
+}
+
+QColor ThemeManager::background() const {
+	return QColor(255, 255, 255);
+}
+
+QColor ThemeManager::foreground() const {
+	return QColor(0, 0, 0);
+}
+
+ThemeManager::ThemeManager() {
 }
 
 }

@@ -69,9 +69,6 @@ if (MSVC)
 	set(CMAKE_CXX_FLAGS_RELEASE "/W4 /O2 ${CMAKE_CXX_FLAGS_RELEASE}")
 	
 	source_group("Generated Files" FILES ${PIE_RC} ${PIE_QM} ${PIE_AUTOMOC})
-	source_group("graphcut" FILES ${GC_HEADERS} ${GC_SOURCES})
-	source_group("LSD" FILES ${LSD_HEADERS} ${LSD_SOURCES})
-	source_group("maxclique" FILES ${MC_HEADERS} ${MC_SOURCES})
 	source_group("Changelog" FILES ${CHANGLOG_FILE})
 
 	# set as console project 
@@ -156,6 +153,11 @@ elseif (MSVC)
 	set(DC_PATHS_DEBUG ${OpenCV_DIR}/bin/Debug ${QT_QMAKE_PATH} ${VS_PATH})
 
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/DependencyCollector.config.cmake.in ${DC_CONFIG})
+
+	# WinExtras
+	file(COPY ${QT_QMAKE_PATH}/Qt5WinExtras.dll DESTINATION ${CMAKE_BINARY_DIR}/Release/)
+	file(COPY ${QT_QMAKE_PATH}/Qt5WinExtras.dll DESTINATION ${CMAKE_BINARY_DIR}/RelWithDebInfo/)
+	file(COPY ${QT_QMAKE_PATH}/Qt5WinExtrasd.dll DESTINATION ${CMAKE_BINARY_DIR}/Debug/)
 
 	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND python ${DC_SCRIPT} --infile $<TARGET_FILE:${PROJECT_NAME}> --configfile ${DC_CONFIG} --configuration $<CONFIGURATION>)
 endif()
