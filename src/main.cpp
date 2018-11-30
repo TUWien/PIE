@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
 		pie::DatabaseLoader db("C:/temp/db.json");
 		db.parse();
 
-		pie::test::Processor(db.collection());
+		pie::test::Processor(*db.collection());
 	}
 	// show them what we've got
 	else {

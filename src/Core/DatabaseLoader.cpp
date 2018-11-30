@@ -51,14 +51,14 @@ namespace pie {
 
 		Timer dt;
 		QJsonObject jd = Utils::readJson(mFilePath);
-		mCollection = Collection::fromJson(jd, QFileInfo(mFilePath).baseName());
+		mCollection = QSharedPointer<Collection>::create(Collection::fromJson(jd, QFileInfo(mFilePath).baseName()));
 
-		qDebug() << mCollection.size() << "pages parsed in" << dt;
+		qDebug() << mCollection->size() << "pages parsed in" << dt;
 
-		return !mCollection.isEmpty();
+		return !mCollection->isEmpty();
 	}
 
-	Collection DatabaseLoader::collection() const {
+	QSharedPointer<Collection> DatabaseLoader::collection() const {
 		return mCollection;
 	}
  }

@@ -29,67 +29,84 @@
  [4] https://nomacs.org
  *******************************************************************************************************/
 
+#pragma once
 
-#include "WidgetManager.h"
-#include "Settings.h"
-#include "Utils.h"
-#include "ActionManager.h"
+#include "BaseWidgets.h"
 
 #pragma warning(push, 0)	// no warnings from includes
-#include <QFileDialog>
-#include <QAction>
-#include <QApplication>
+#include <QPixmap>
 #pragma warning(pop)
+
+#ifndef DllExport
+#ifdef DLL_CORE_EXPORT
+#define DllExport Q_DECL_EXPORT
+#else
+#define DllExport Q_DECL_IMPORT
+#endif
+#endif
+
+class QRadioButton;
+class QCheckBox;
+class QGridLayout;
+class QSettings;
+class QMimeData;
 
 namespace pie {
 
-	DialogManager::DialogManager() {
+class DllExport AxisButton : public OrButton {
+	Q_OBJECT
 
-		const ActionManager& am = ActionManager::instance();
-		connect(am.action(ActionManager::file_open_database), SIGNAL(triggered()), this, SLOT(openDialog()));
-	}
+public:
+	AxisButton(const QString& text = QString(), Qt::Orientation orientation = Qt::Horizontal, QWidget* parent = 0);
 
-	DialogManager& DialogManager::instance() {
+public slots:
+	void actionClicked();
 
-		static DialogManager dm;
+signals:
+	void changeAxisIndex(const QPoint& idx) const;
 
-		return dm;
+protected:
+	void mousePressEvent(QMouseEvent *ev);
+	void mouseReleaseEvent(QMouseEvent *ev);
+	void contextMenuEvent(QContextMenuEvent *ev);
+	void openMenu(const QPoint& pos);
 
-	}
+};
 
-	void DialogManager::openDialog() {
+class DllExport MenuButton : public QPushButton {
+	Q_OBJECT
 
-		QStringList openFilters;
-		openFilters << tr("Collection (*.json)");
+public:
+	MenuButton(QWidget* parent = 0);
+	virtual ~MenuButton() {}
 
-		const auto& s = Settings::instance().app();
-		QString ldir = !s.recentFiles.isEmpty() ? s.recentFiles[0] : "";
+	//void setPlotParams(PlotParams* params);
+	//void addPlotSettings(AbstractPlotSettings* plotSettings);
 
-		// load system default open dialog
-		QString filePath = QFileDialog::getOpenFileName(
-			wm::dialogParent(),
-			tr("Open Collection"),
-			ldir,
-			openFilters.join(";;"));
+protected:
+	void mousePressEvent(QMouseEvent *e);
+	void mouseReleaseEvent(QMouseEvent *e);
+	void enterEvent(QEvent *e);
+	void leaveEvent(QEvent *e);
 
-		if (filePath.isEmpty())
-			return;
+	virtual void openMenu(const QPoint& pos);
 
-		emit loadFileSignal(filePath);
-	}
+	QPixmap mPixmap;
+	//PlotParams* mParams;
+	//QVector<AbstractPlotSettings*> mPlotSettings;
+};
 
-	// -------------------------------------------------------------------- general functions 
-	QWidget * wm::dialogParent() {
+class DllExport NewPlotWidget : public Widget {
+	Q_OBJECT
 
-		QWidget* dp = 0;
+public:
+	NewPlotWidget(QWidget* parent = 0);
 
-		for (QWidget* w : QApplication::topLevelWidgets()) {
-			dp = w;
+signals:
+	void newDotPlotSignal();
 
-			if (dp->objectName() == "MainWindow")
-				break;
-		}
+protected:
+	void createLayout();
+};
 
-		return dp;
-	}
 }

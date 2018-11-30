@@ -4,7 +4,7 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/Debug)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/Release)
 
 # these variables need to be set before adding subdirectory with projects
-set(RDF_BUILD_DIRECTORY ${CMAKE_BINARY_DIR})
+set(PIE_BUILD_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # Platforms
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/Release/platforms)

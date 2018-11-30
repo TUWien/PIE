@@ -32,6 +32,7 @@
 #pragma once
 
 #include "PageData.h"
+#include "BasePlot.h"
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QWidget>
@@ -48,25 +49,140 @@
 #endif
 
 // Qt defines
+class QGridLayout;
+class QMimeData;
 
 namespace pie {
 
-// read defines
+	// pie defines
+	class DotViewPort;
+	class MenuButton;
+	class AxisButton;
 
-
-
-	class DllExport PlotWidget : public QWidget {
+	class DllExport DotPlotParams : public PlotParams {
 		Q_OBJECT
 
 	public:
-		PlotWidget(const Collection& collection, QWidget* parent = 0);
+		DotPlotParams(QObject* parent, bool isGlobal = false);
+		virtual ~DotPlotParams() {}
+
+		using PlotParams::connectWith;
+		using PlotParams::copyTo;
+		virtual void connectWith(DotPlotParams* param);
+		virtual void copyTo(DotPlotParams* o) const;
+
+		virtual void save(QSettings& settings) const;
+		virtual void load(QSettings& settings);
+
+		int pointSize() const;
+		int displayPercent() const;
+		int alpha() const;
+
+	public slots:
+		void setPointSize(int pointSize);
+		void setDisplayPercent(int displayPercent);
+		void setAlpha(int alpha);
+		void setAlphaPercent(int alpha);
+
+	signals:
+		void pointSizeChanged(int pointSize = 1) const;
+		void displayPercentChanged(int displayPercent = 100) const;
+		void pointAlphaChanged(int alpha = 255) const;
+
+	protected:
+
+		int mDisplayPercent = 100;
+		int mPointSize = 1;
+		int mPointAlpha = 100;
+	};
+	
+	// this class will hold the toolbar (if needed)
+	class DllExport DotPlot : public BasePlot {
+		Q_OBJECT
+
+	public:
+		DotPlot(QSharedPointer<Collection> collection, QWidget* parent = 0);
+		virtual ~DotPlot() {}
+
+		void showDecorations(bool show = true);
+		DotViewPort* viewport() const;
+		MenuButton* menuButton() const;
+
+		virtual QPoint axisIndex() const;
+		virtual void setFullScreen(bool fullScreen) override;
+		
+		virtual void setSelected(bool selected);
+
+	public slots:
+		//void axisIndexChanged(const QPoint& axisIndex);
+		//virtual void setAxisIndex(const QPoint& index);
+		void setMinimumSize(const QSize& size);
+
+	protected:
+		void createLayout();
+		void mapAxisIndex();	// apply the axis name (different between experiments) to the axis index
+
+		AxisButton* mXAxisLabel;
+		AxisButton* mYAxisLabel;
+
+		DotViewPort* mViewPort;
+
+		DotPlotParams* mP;
+		MenuButton* mMenuButton;
+	};
+
+	class PlotWidget : public QWidget {
+		Q_OBJECT
+
+	public:
+		PlotWidget(QSharedPointer<Collection> collection, QWidget* parent = 0);
+		virtual ~PlotWidget();
 
 		QString title() const;
+		//void clear();
 
-	private:
+	public slots:
+		virtual void setVisible(bool show);
+		void setNumColumns(int numColumns = -1);
+		void addPlot(bool update = true);
+		void removePlot();
+		void singlePlot();
+
+		void selectAll(bool selected = true);
+		void selectPlots(bool selected = true, int from = 0, int to = -1);
+		void clearSelection();
+		void shiftSelection(bool selected);
+		void startShiftSelection();
+
+		//void saveDisplayParams();
+		//void savePlots(const QString& name);
+		//void loadPlots(const QString& name);
+		//void print(DkPrintHandler& ph);
+
+	signals:
+		void displayedDimsSignal(const QVector<QPoint>& dims) const;
+
+	protected:
+		void resizeEvent(QResizeEvent *ev) override;
+		void closeEvent(QCloseEvent* ev) override;
+		
+		void updateLayout();
 		void createLayout();
+		void connectPlot(BasePlot* plot);
 
-		Collection mCollection;
+		//void saveSettings() const;
+
+		//void backup();
+
+		QVector<BasePlot*> mPlots;
+
+		//DkNewPlotWidget* mNewPlotWidget;
+
+		int mLastShiftIdx = -1;
+		int mNumColumns = 3;
+		QGridLayout* oLayout;
+
+		QSharedPointer<Collection> mCollection;
 	};
 
 }

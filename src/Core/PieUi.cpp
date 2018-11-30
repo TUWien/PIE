@@ -138,7 +138,6 @@ namespace pie {
 		}
 
 		PlotWidget* pw = new PlotWidget(db.collection(), this);
-		
 		addTab(pw, pw->title(), true);
 
 		return true;
@@ -260,7 +259,7 @@ namespace pie {
 
 #ifdef WIN32
 		// fixes #392 - starting maximized on 2nd screen - tested on win8 only
-		QRect r = settings.value("geometryAutoFlow", QRect()).toRect();
+		QRect r = settings.value("geometryPIE", QRect()).toRect();
 
 		if (r.width() && r.height())	// do not set the geometry if autoflow is loaded the first time
 			setGeometry(r);
@@ -274,7 +273,7 @@ namespace pie {
 
 		DefaultSettings settings;
 
-		settings.setValue("geometryAutoFlow", geometry());
+		settings.setValue("geometryPIE", geometry());
 		settings.setValue("geometry", saveGeometry());
 		settings.setValue("windowState", saveState());
 		

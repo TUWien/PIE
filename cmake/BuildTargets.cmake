@@ -35,8 +35,8 @@ add_dependencies(${PIE_BINARY_NAME} ${PIE_DLL_CORE_NAME})
 target_include_directories(${PIE_BINARY_NAME} 		PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_include_directories(${PIE_DLL_CORE_NAME} 	PRIVATE ${OpenCV_INCLUDE_DIRS})
 
-target_link_libraries(${PIE_BINARY_NAME} Qt5::Widgets Qt5::Gui Qt5::Network Qt5::Concurrent Qt5::Svg)
-target_link_libraries(${PIE_DLL_CORE_NAME} Qt5::Widgets Qt5::Gui Qt5::Network Qt5::Concurrent Qt5::Svg)
+target_link_libraries(${PIE_BINARY_NAME} Qt5::Widgets Qt5::OpenGL Qt5::Gui Qt5::Network Qt5::Concurrent Qt5::Svg ${OPENGL_LIBRARIES} )
+target_link_libraries(${PIE_DLL_CORE_NAME} Qt5::Widgets Qt5::OpenGL Qt5::Gui Qt5::Network Qt5::Concurrent Qt5::Svg ${OPENGL_LIBRARIES} )
 
 if (MSVC)
 	target_link_libraries(${PIE_BINARY_NAME} Qt5::WinExtras)
@@ -58,14 +58,8 @@ set_target_properties(${OpenCV_LIBS} PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBIN
 set_target_properties(${OpenCV_LIBS} PROPERTIES MAP_IMPORTED_CONFIG_MINSIZEREL RELEASE)
 
 # create settings file for portable version while working
-if(NOT EXISTS ${CMAKE_BINARY_DIR}/Release/rdf-settings.nfo)
-	file(WRITE ${CMAKE_BINARY_DIR}/Release/rdf-settings.nfo "")
-endif()
-if(NOT EXISTS ${CMAKE_BINARY_DIR}/RelWithDebInfo/rdf-settings.nfo)
-	file(WRITE ${CMAKE_BINARY_DIR}/RelWithDebInfo/rdf-settings.nfo "")
-endif()
-if(NOT EXISTS ${CMAKE_BINARY_DIR}/Debug/rdf-settings.nfo)
-	file(WRITE ${CMAKE_BINARY_DIR}/Debug/rdf-settings.nfo "")
+if(NOT EXISTS ${CMAKE_BINARY_DIR}/Debug/pie-settings.nfo)
+	file(WRITE ${CMAKE_BINARY_DIR}/Debug/pie-settings.nfo "")
 endif()
 
 if (MSVC)
@@ -102,7 +96,6 @@ set(
 	PIE_INCLUDE_DIRECTORY 
 	${CMAKE_CURRENT_SOURCE_DIR}/src 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Core 
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Module 
 	${CMAKE_BINARY_DIR})
 
 if (MSVC)

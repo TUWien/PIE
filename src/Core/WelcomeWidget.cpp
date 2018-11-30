@@ -50,7 +50,7 @@
 
 namespace pie {
 
-// DkRecentFilesWidget --------------------------------------------------------------------
+// RecentFilesWidget --------------------------------------------------------------------
 RecentFilesWidget::RecentFilesWidget(QWidget* parent) : QWidget(parent) {
 	
 	createLayout();
@@ -58,7 +58,7 @@ RecentFilesWidget::RecentFilesWidget(QWidget* parent) : QWidget(parent) {
 
 void RecentFilesWidget::createLayout() {
 
-	QLabel* title = new QLabel(tr("Recent Files"), this);
+	QLabel* title = new QLabel(tr("Recent Collections"), this);
 
 	mModel = new QStandardItemModel(this);
 	
@@ -110,7 +110,7 @@ OpenFilesWidget::OpenFilesWidget(QWidget* parent) : QWidget(parent) {
 
 void OpenFilesWidget::createLayout() {
 
-	QLabel* title = new QLabel(tr("Open a Collection"), this);
+	QLabel* title = new QLabel(tr("Open a New Collection"), this);
 	title->setAlignment(Qt::AlignHCenter);
 
 	// TODO: check y we can't load svgs
@@ -129,7 +129,7 @@ void OpenFilesWidget::createLayout() {
 	connect(pbOpen, SIGNAL(clicked()), m.action(ActionManager::file_open_database), SIGNAL(triggered()));
 }
 
-// DkStartWidget --------------------------------------------------------------------
+// WelcomeWidget --------------------------------------------------------------------
 WelcomeWidget::WelcomeWidget(QWidget* parent) : QWidget(parent) {
 	
 	setObjectName("WelcomeWidget");

@@ -50,10 +50,6 @@
 #endif
 #endif
 
-// some basic defines - yes, we try to not create too many macros...
-#define DK_DEG2RAD	0.017453292519943
-#define DK_RAD2DEG 	57.295779513082323
-
 // converts a version (e.g. 3.1.0) to a comparable int
 #define PIE_VERSION(major, minor, revision) (major << 16 | minor << 8 | revision)
 #define PIE_OPENCV_VERSION PIE_VERSION(CV_MAJOR_VERSION, CV_MINOR_VERSION, CV_VERSION_REVISION)
@@ -62,6 +58,10 @@
 class QSettings;
 
 namespace pie {	
+
+// some basic defines - yes, we try to not create too many macros...
+#define DEG2RAD		0.017453292519943
+#define RAD2DEG 	57.295779513082323
 
 #define WHO_IS_CUTE "Anna"
 
@@ -96,6 +96,8 @@ public:
 	/// <param name="filePath">The file path.</param>
 	/// <returns>True if the extension is valid.</returns>
 	static bool isValidFile(const QString& filePath);
+
+	static QPixmap dragScreenShot(QWidget* w, double opacity = 0.5);
 
 	// little number thingies
 	template<typename num>
@@ -169,6 +171,8 @@ namespace ColorManager {
 	DllExport QColor pink(double alpha = 1.0);
 	DllExport QColor white(double alpha = 1.0);
 	DllExport QColor black(double alpha = 1.0);
+	DllExport QColor background(double alpha = 1.0);
+	DllExport QColor foreground(double alpha = 1.0);
 
 	DllExport QColor alpha(const QColor& col, double a);
 

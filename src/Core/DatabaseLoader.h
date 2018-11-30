@@ -35,6 +35,7 @@
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QString>
+#include <QSharedPointer>
 #pragma warning(pop)
 
 #ifndef DllExport
@@ -54,12 +55,12 @@ public:
 
 	bool parse();
 
-	Collection collection() const;
+	QSharedPointer<Collection> collection() const;
 
 private:
 	QString mFilePath;
 
-	Collection mCollection;
+	QSharedPointer<Collection> mCollection;
 };
 
 }

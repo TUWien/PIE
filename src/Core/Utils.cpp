@@ -693,6 +693,14 @@ QColor ColorManager::black(double alpha) {
 	return QColor(0, 0, 0, qRound(alpha * 255));
 }
 
+QColor ColorManager::background(double alpha) {
+	return QColor(255, 255, 255, qRound(alpha * 255));
+}
+
+DllExport QColor ColorManager::foreground(double alpha) {
+	return QColor(0, 0, 0, qRound(alpha * 255));
+}
+
 QColor ColorManager::alpha(const QColor & col, double a) {
 
 	QColor c = col;
