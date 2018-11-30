@@ -82,6 +82,8 @@ namespace pie {
 		case m_reg_width:	return QSharedPointer<WidthMapper>::create();
 		case m_reg_height:	return QSharedPointer<HeightMapper>::create();
 		case m_reg_area:	return QSharedPointer<AreaMapper>::create();
+		case m_img_width:	return QSharedPointer<PageWidthMapper>::create();
+		case m_img_height:	return QSharedPointer<PageHeightMapper>::create();
 		}
 
 		if (type != m_undefined)
@@ -97,22 +99,23 @@ namespace pie {
 		return mName;
 	}
 
-	cv::Mat AbstractMapper::process(Collection * c) const {
-		
+	// -------------------------------------------------------------------- RegionMapper 
+	cv::Mat RegionMapper::process(Collection * c) const {
+
 		if (!c) {
 			qWarning() << "cannot process empty collection";
 			return cv::Mat();
 		}
 
-		std::function<double(const Region&)> f = processor();
-		//auto f = [&](const Region& r) { return r.width(); };
+		std::function<double(const Region&)> fr = processor();
 
 		// OpenGL only knows floats
 		cv::Mat dv(1, c->size(), CV_32FC1);
 		float* px = dv.ptr<float>();
 
 		for (auto p : c->pages()) {
-			*px = (float)p->averageRegion(f);
+
+			*px = (float)p->averageRegion(fr);
 			px++;
 		}
 
@@ -123,10 +126,34 @@ namespace pie {
 		return dv;
 	}
 
-	//std::function<double(const Region&)> AbstractMapper::processor() const {
-	//	qDebug() << "ulalala...";
-	//	return std::function<double(const Region&)>();
-	//}
+	// -------------------------------------------------------------------- PageMapper 
+	cv::Mat PageMapper::process(Collection * c) const {
+
+		if (!c) {
+			qWarning() << "cannot process empty collection";
+			return cv::Mat();
+		}
+
+		std::function<double(const PageData&)> pr = processor();
+
+		// OpenGL only knows floats
+		cv::Mat dv(1, c->size(), CV_32FC1);
+		float* px = dv.ptr<float>();
+
+		for (auto p : c->pages()) {
+
+			*px = (float)pr(*p);
+			px++;
+		}
+
+		// map to screen
+		cv::normalize(dv, dv, 0, 1, cv::NORM_MINMAX);
+		dv *= 2.0f;
+		dv -= 1.0f;
+
+		return dv;
+	}
+
 
 	// -------------------------------------------------------------------- WidthMapper 
 	WidthMapper::WidthMapper() {
@@ -155,6 +182,26 @@ namespace pie {
 
 	std::function<double(const Region&)> AreaMapper::processor() const {
 		return [&](const Region& r) { return r.area(); };
+	}
+
+	// -------------------------------------------------------------------- PageWidthMapper 
+	PageWidthMapper::PageWidthMapper() {
+		mName = QObject::tr("Image Width");
+		mType = m_img_width;
+	}
+
+	std::function<double(const PageData&)> PageWidthMapper::processor() const {
+		return [&](const PageData& pd) { return pd.image().width(); };
+	}
+
+	// -------------------------------------------------------------------- PageHeightMapper 
+	PageHeightMapper::PageHeightMapper() {
+		mName = QObject::tr("Image Height");
+		mType = m_img_height;
+	}
+
+	std::function<double(const PageData&)> PageHeightMapper::processor() const {
+		return [&](const PageData& pd) { return pd.image().height(); };
 	}
 }
 

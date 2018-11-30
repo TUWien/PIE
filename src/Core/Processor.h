@@ -115,6 +115,9 @@ public:
 		m_reg_height,
 		m_reg_area,
 
+		m_img_width,
+		m_img_height,
+
 		m_end
 	};
 
@@ -123,16 +126,34 @@ public:
 
 	Type type() const;
 	QString name() const;
-	cv::Mat process(Collection* c) const;
+	virtual cv::Mat process(Collection* c) const = 0;
 
 protected:
-	virtual std::function<double(const Region&)> processor() const = 0;
 
 	QString mName;
 	Type mType = m_undefined;
 };
 
-class DllExport WidthMapper : public AbstractMapper {
+
+class DllExport RegionMapper : public AbstractMapper {
+
+public:
+	cv::Mat process(Collection* c) const;
+
+protected:
+	virtual std::function<double(const Region&)> processor() const = 0;
+};
+
+class DllExport PageMapper : public AbstractMapper {
+
+public:
+	cv::Mat process(Collection* c) const;
+
+protected:
+	virtual std::function<double(const PageData&)> processor() const = 0;
+};
+
+class DllExport WidthMapper : public RegionMapper {
 
 public:
 	WidthMapper();
@@ -142,7 +163,7 @@ protected:
 
 };
 
-class DllExport HeightMapper : public AbstractMapper {
+class DllExport HeightMapper : public RegionMapper {
 
 public:
 	HeightMapper();
@@ -152,13 +173,32 @@ protected:
 
 };
 
-class DllExport AreaMapper : public AbstractMapper {
+class DllExport AreaMapper : public RegionMapper {
 
 public:
 	AreaMapper();
 
 protected:
 	virtual std::function<double(const Region&)> processor() const;
+
+};
+
+class DllExport PageWidthMapper : public PageMapper {
+
+public:
+	PageWidthMapper();
+
+protected:
+	virtual std::function<double(const PageData&)> processor() const;
+};
+
+class DllExport PageHeightMapper : public PageMapper {
+
+public:
+	PageHeightMapper();
+
+protected:
+	virtual std::function<double(const PageData&)> processor() const;
 
 };
 

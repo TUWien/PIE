@@ -84,6 +84,10 @@ namespace pie {
 		return mRegions.size();
 	}
 
+	ImageData PageData::image() const {
+		return mImg;
+	}
+
 	double PageData::averageRegion(std::function<double(const Region&)> prop) const {
 
 		QList<double> sizes;
@@ -155,6 +159,14 @@ namespace pie {
 
 	QString ImageData::name() const {
 		return mFileName;
+	}
+
+	int ImageData::width() const {
+		return mSize.width();
+	}
+
+	int ImageData::height() const {
+		return mSize.height();
 	}
 
 	ImageData ImageData::fromJson(const QJsonObject & jo) {

@@ -105,6 +105,8 @@ public:
 	ImageData();
 
 	QString name() const;
+	int width() const;
+	int height() const;
 
 	static ImageData fromJson(const QJsonObject& jo);
 
@@ -121,7 +123,8 @@ public:
 	int numRegions() const;
 	QVector<QSharedPointer<Region> > regions() const;
 	QString name() const;
-
+	
+	ImageData image() const;
 	double averageRegion(std::function<double(const Region&)> prop) const;
 
 	static PageData fromJson(const QJsonObject& jo);
