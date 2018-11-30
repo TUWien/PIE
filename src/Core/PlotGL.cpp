@@ -112,7 +112,7 @@ namespace pie {
 
 		//drawSelection(p);
 
-		//drawEmpty(p);
+		drawEmpty(p);
 	}
 
 	void DotViewPort::applyGLTransform(bool apply) {
@@ -175,7 +175,7 @@ namespace pie {
 		QString displayText;
 
 		if (mP->axisIndex().x() == -1 || mP->axisIndex().y() == -1)
-			displayText = tr("Please select the dimensions.");
+			displayText = tr("Please select features.");
 
 		//// this should never happen
 		//if (!mBaseWidget->eventCount())

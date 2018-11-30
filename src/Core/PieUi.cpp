@@ -239,10 +239,10 @@ namespace pie {
 			cssString.replace("INFO_COLOR", Utils::colorToString(ColorManager::lightGray()));
 			cssString.replace("HIGHLIGHT_LIGHT", Utils::colorToString(ColorManager::blue(0.2)));
 			cssString.replace("HIGHLIGHT_COLOR", Utils::colorToString(ColorManager::blue()));
-			cssString.replace("SELECTION_LIGHT", Utils::colorToString(ColorManager::green(0.5)));
-			cssString.replace("SELECTION_COLOR", Utils::colorToString(ColorManager::green()));
-			cssString.replace("BACKGROUND_COLOR", Utils::colorToString(ColorManager::white()));
-			cssString.replace("FOREGROUND_COLOR", Utils::colorToString(ColorManager::black()));
+			cssString.replace("SELECTION_LIGHT", Utils::colorToString(ColorManager::pink(0.5)));
+			cssString.replace("SELECTION_COLOR", Utils::colorToString(ColorManager::pink()));
+			cssString.replace("BACKGROUND_COLOR", Utils::colorToString(ColorManager::background()));
+			cssString.replace("FOREGROUND_COLOR", Utils::colorToString(ColorManager::foreground()));
 
 			qApp->setStyleSheet(cssString);
 			file.close();

@@ -2,5 +2,7 @@
     <qresource prefix="/pie">
 		<file>stylesheet.css</file>
 		<file>img/open.png</file>
+    <file>img/dot-plot.png</file>
+    <file>img/bars.png</file>
 	</qresource>
 </RCC>

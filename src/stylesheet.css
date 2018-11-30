@@ -1,4 +1,4 @@
-/* start widgets */
+/* recent files widgets */
 pie--OpenFilesWidget,
 pie--RecentFilesWidget {
 	background-color: #fff;
@@ -77,3 +77,72 @@ pie--RecentFilesWidget > QListView QScrollBar:sub-line:horizontal {
 	width: 0px;
 	background: BACKGROUND_COLOR;
 }
+
+/* new plot widget */
+pie--NewPlotWidget {
+	background-color: BACKGROUND_COLOR;
+}
+
+QPushButton#newPlotButton:hover {
+	background-color: rgba(100, 100, 100, 90);
+	border: none;
+}
+
+QPushButton#newPlotButton:focus {
+	background-color: rgba(100, 100, 100, 90);
+	border: none;
+}
+
+QLabel#newPlotLabel {
+	color: HIGHLIGHT_COLOR;
+	font: light "Segoe UI";
+	font-size: 14pt;
+}
+
+/* plot */
+QPushButton#axisLabel {
+	color: HIGHLIGHT_COLOR;
+	font: light "Segoe UI";
+	font-size: 8pt;
+	padding: 2px;
+}
+
+QPushButton#axisLabel:hover {
+	background-color: rgba(100, 100, 100, 90);
+	border: none;
+	/* color: #0097e2; */ /* got some problems with own painter here */
+}
+
+QPushButton#axisLabel:focus {
+	background-color: rgba(100, 100, 100, 90);
+	border: none;
+	/* color: #0097e2; */ /* got some problems with own painter here */
+}
+
+pie--OrButton {
+	color: HIGHLIGHT_COLOR;
+	font: light "Segoe UI";
+	font-size: 10pt;
+	padding: 2px;
+}
+
+pie--MenuButton {
+ 	max-width: 16px;
+	max-height: 16px;
+	margin: 4px;
+	border: none;
+}
+
+pie--BasePlot {
+	background-color: BACKGROUND_COLOR;
+	/* min-height: 200px; */
+}
+
+pie--BasePlot:focus {
+	border-top: 2px solid HIGHLIGHT_COLOR;
+}
+
+pie--BasePlot[selected="true"] {
+	border-top: 2px solid SELECTION_COLOR;
+}
+

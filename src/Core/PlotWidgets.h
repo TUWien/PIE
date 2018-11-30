@@ -53,60 +53,61 @@ class QMimeData;
 
 namespace pie {
 
-class DllExport AxisButton : public OrButton {
-	Q_OBJECT
+	class PlotParams;
 
-public:
-	AxisButton(const QString& text = QString(), Qt::Orientation orientation = Qt::Horizontal, QWidget* parent = 0);
+	class DllExport AxisButton : public OrButton {
+		Q_OBJECT
 
-public slots:
-	void actionClicked();
+	public:
+		AxisButton(const QString& text = QString(), Qt::Orientation orientation = Qt::Horizontal, QWidget* parent = 0);
 
-signals:
-	void changeAxisIndex(const QPoint& idx) const;
+	public slots:
+		void actionClicked();
 
-protected:
-	void mousePressEvent(QMouseEvent *ev);
-	void mouseReleaseEvent(QMouseEvent *ev);
-	void contextMenuEvent(QContextMenuEvent *ev);
-	void openMenu(const QPoint& pos);
+	signals:
+		void changeAxisIndex(const QPoint& idx) const;
 
-};
+	protected:
+		void mousePressEvent(QMouseEvent *ev);
+		void mouseReleaseEvent(QMouseEvent *ev);
+		void contextMenuEvent(QContextMenuEvent *ev);
+		void openMenu(const QPoint& pos);
 
-class DllExport MenuButton : public QPushButton {
-	Q_OBJECT
+	};
 
-public:
-	MenuButton(QWidget* parent = 0);
-	virtual ~MenuButton() {}
+	class DllExport MenuButton : public QPushButton {
+		Q_OBJECT
 
-	//void setPlotParams(PlotParams* params);
-	//void addPlotSettings(AbstractPlotSettings* plotSettings);
+	public:
+		MenuButton(QWidget* parent = 0);
+		virtual ~MenuButton() {}
 
-protected:
-	void mousePressEvent(QMouseEvent *e);
-	void mouseReleaseEvent(QMouseEvent *e);
-	void enterEvent(QEvent *e);
-	void leaveEvent(QEvent *e);
+		void setPlotParams(PlotParams* params);
+		//void addPlotSettings(AbstractPlotSettings* plotSettings);
 
-	virtual void openMenu(const QPoint& pos);
+	protected:
+		void mousePressEvent(QMouseEvent *e);
+		void mouseReleaseEvent(QMouseEvent *e);
+		void enterEvent(QEvent *e);
+		void leaveEvent(QEvent *e);
 
-	QPixmap mPixmap;
-	//PlotParams* mParams;
-	//QVector<AbstractPlotSettings*> mPlotSettings;
-};
+		virtual void openMenu(const QPoint& pos);
 
-class DllExport NewPlotWidget : public Widget {
-	Q_OBJECT
+		QPixmap mPixmap;
+		PlotParams* mParams = 0;
+		//QVector<AbstractPlotSettings*> mPlotSettings;
+	};
 
-public:
-	NewPlotWidget(QWidget* parent = 0);
+	class DllExport NewPlotWidget : public Widget {
+		Q_OBJECT
 
-signals:
-	void newDotPlotSignal();
+	public:
+		NewPlotWidget(QWidget* parent = 0);
 
-protected:
-	void createLayout();
-};
+	signals:
+		void newDotPlotSignal();
 
+	protected:
+		void createLayout();
+	};
 }

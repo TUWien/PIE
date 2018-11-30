@@ -58,6 +58,7 @@ namespace pie {
 	class DotViewPort;
 	class MenuButton;
 	class AxisButton;
+	class NewPlotWidget;
 
 	class DllExport DotPlotParams : public PlotParams {
 		Q_OBJECT
@@ -176,7 +177,7 @@ namespace pie {
 
 		QVector<BasePlot*> mPlots;
 
-		//DkNewPlotWidget* mNewPlotWidget;
+		NewPlotWidget* mNewPlotWidget;
 
 		int mLastShiftIdx = -1;
 		int mNumColumns = 3;

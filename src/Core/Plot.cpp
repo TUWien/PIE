@@ -171,13 +171,13 @@ namespace pie {
 		mViewPort = new DotViewPort(mP, this);
 		mViewPort->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
-		//mXAxisLabel = new AxisButton(tr("Select"), Qt::Horizontal, this);
-		//mXAxisLabel->setObjectName("axisLabel");
-		//mYAxisLabel = new AxisButton(tr("Select"), Qt::Vertical, this);
-		//mYAxisLabel->setObjectName("axisLabel");
+		mXAxisLabel = new AxisButton(tr("Select"), Qt::Horizontal, this);
+		mXAxisLabel->setObjectName("axisLabel");
+		mYAxisLabel = new AxisButton(tr("Select"), Qt::Vertical, this);
+		mYAxisLabel->setObjectName("axisLabel");
 
-		//mMenuButton = new MenuButton(this);
-		//mMenuButton->setPlotParams(mP);
+		mMenuButton = new MenuButton(this);
+		mMenuButton->setPlotParams(mP);
 		//mMenuButton->addPlotSettings(new DotPlotSettings(mMenuButton));
 
 		// dummy widget which gives us space for focus effect
@@ -305,6 +305,9 @@ namespace pie {
 
 		createLayout();
 		setAcceptDrops(true);
+
+		addPlot();
+		addPlot();
 	}
 
 	PlotWidget::~PlotWidget() {
@@ -324,12 +327,11 @@ namespace pie {
 		oLayout->setContentsMargins(0, 0, 0, 0);
 		oLayout->setSpacing(2);
 
-		//mNewPlotWidget = new DkNewPlotWidget(this);
-		//mNewPlotWidget->hide();
+		mNewPlotWidget = new NewPlotWidget(this);
+		mNewPlotWidget->hide();
 
 		ResizableScrollArea* scrollArea = new ResizableScrollArea(this);
-		//QScrollArea* scrollArea = new QScrollArea(this);
-		scrollArea->setObjectName("DkScrollAreaPlots");
+		scrollArea->setObjectName("ScrollAreaPlots");
 		scrollArea->setWidgetResizable(true);
 		scrollArea->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 		scrollArea->setWidget(dummy);
@@ -342,7 +344,7 @@ namespace pie {
 		//connect(m.action(m.edit_add_dot_plot), SIGNAL(triggered()), this, SLOT(addDotPlot()));
 		//connect(m.action(m.edit_select_all), SIGNAL(triggered(bool)), this, SLOT(selectAll(bool)));
 
-		//connect(mNewPlotWidget, SIGNAL(newDotPlotSignal()), this, SLOT(addDotPlot()));
+		connect(mNewPlotWidget, SIGNAL(newDotPlotSignal()), this, SLOT(addPlot()));
 
 		//connect(DkGlobalPlotParams::instance().params(), SIGNAL(numColumnsChanged(int)), this, SLOT(setNumColumns(int)));
 		//connect(DkGlobalPlotParams::instance().params(), SIGNAL(loadPlotsSignal(const QString&)), this, SLOT(loadPlots(const QString&)));
@@ -362,10 +364,10 @@ namespace pie {
 			mPlots[idx]->setMinimumHeight(size);
 		}
 
-		//mNewPlotWidget->show();
+		mNewPlotWidget->show();
 
-		//// finally add the new plot widget
-		//oLayout->addWidget(mNewPlotWidget, idx / mNumColumns, idx % mNumColumns);
+		// finally add the new plot widget
+		oLayout->addWidget(mNewPlotWidget, idx / mNumColumns, idx % mNumColumns);
 	}
 
 	void PlotWidget::addPlot(bool update) {

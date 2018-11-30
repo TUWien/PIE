@@ -126,16 +126,15 @@ namespace pie {
 	// MenuButton --------------------------------------------------------------------
 	MenuButton::MenuButton(QWidget* parent /* = 0 */) : QPushButton(parent) {
 
-		mPixmap = QPixmap(":/pie/img/plot-menu.png");
+		mPixmap = QPixmap(":/pie/img/bars.png");
 
 		setIcon(ColorManager::colorizePixmap(mPixmap, ColorManager::blue()));
 		setFlat(true);	
 	}
 
-	//void MenuButton::setPlotParams(DkPlotParams* params) {
-	//
-	//	mParams = params;
-	//}
+	void MenuButton::setPlotParams(PlotParams* params) {
+		mParams = params;
+	}
 
 	//void MenuButton::addPlotSettings(DkAbstractPlotSettings* plotSettings) {
 	//	
@@ -197,7 +196,7 @@ namespace pie {
 		QLabel* newPlotLabel = new QLabel(tr("Create a new Plot:"), this);
 		newPlotLabel->setObjectName("newPlotLabel");
 
-		QPixmap pmd(":/pie/img/plot-dot.png");
+		QPixmap pmd(":/pie/img/dot-plot.png");
 		pmd = ColorManager::colorizePixmap(pmd, ColorManager::blue());
 		QPushButton* dotPlotButton = new QPushButton(pmd, tr(""), this);
 		dotPlotButton->setIconSize(QSize(64, 64));
@@ -208,7 +207,7 @@ namespace pie {
 		layout->setRowStretch(0, 10);
 		layout->setColumnStretch(0, 10);
 		layout->addWidget(newPlotLabel, 1, 1, 1, 2, Qt::AlignHCenter);
-		layout->addWidget(dotPlotButton, 2, 2);
+		layout->addWidget(dotPlotButton, 2, 2, 1, 2, Qt::AlignHCenter);
 		layout->setRowStretch(10, 10);
 		layout->setColumnStretch(10, 10);
 

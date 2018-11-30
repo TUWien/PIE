@@ -32,6 +32,7 @@
 #pragma once
 
 #include "PageData.h"
+#include "BaseWidgets.h"
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QWidget>
@@ -129,7 +130,7 @@ namespace pie {
 		Mode mMode = m_generic;
 	};
 
-	class DllExport BasePlot : public QWidget {
+	class DllExport BasePlot : public Widget {
 		Q_OBJECT
 
 	public:

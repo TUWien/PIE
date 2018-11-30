@@ -201,7 +201,7 @@ namespace pie {
 	}
 
 	// -------------------------------------------------------------------- BasePlot 
-	BasePlot::BasePlot(QSharedPointer<Collection> collection, QWidget* parent /* = 0 */) : QWidget(parent) {
+	BasePlot::BasePlot(QSharedPointer<Collection> collection, QWidget* parent /* = 0 */) : Widget(parent) {
 
 		setFocusPolicy(Qt::StrongFocus);
 		mCollection = collection;
@@ -244,12 +244,12 @@ namespace pie {
 	void BasePlot::mouseDoubleClickEvent(QMouseEvent *event) {
 
 		setFullScreen(!mFullScreen);	// toggle fullscreen (or better naming: single view)
-		QWidget::mouseDoubleClickEvent(event);
+		Widget::mouseDoubleClickEvent(event);
 	}
 
 	void BasePlot::mousePressEvent(QMouseEvent *event) {
 
-		QWidget::mousePressEvent(event);
+		Widget::mousePressEvent(event);
 	}
 
 	void BasePlot::mouseReleaseEvent(QMouseEvent *event) {
@@ -266,7 +266,7 @@ namespace pie {
 		else if (event->button() == Qt::LeftButton)
 			emit startShiftSelectionSignal();
 
-		QWidget::mouseReleaseEvent(event);
+		Widget::mouseReleaseEvent(event);
 	}
 
 	void BasePlot::closeRequested() const {
