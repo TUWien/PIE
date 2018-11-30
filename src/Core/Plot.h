@@ -96,6 +96,35 @@ namespace pie {
 		int mPointSize = 1;
 		int mPointAlpha = 100;
 	};
+
+	class DllExport GlobalPlotParams {
+
+	public:
+		static GlobalPlotParams& instance();
+
+		DotPlotParams* dotPlotParams() const;
+		PlotParams* params() const;
+
+		void load(QSettings& settings);
+		//PlotSheet loadPlots(const QString& name = QString());
+		//QVector<PlotSheet> loadAllPlots(QSettings& settings);
+
+		void save(QSettings& settings) const;
+		//void saveAllPlots(QSettings& settings, const QVector<DkPlotSheet>& plots) const;
+
+		//void setInitialPlots(const QVector<DkPlotParams*>& params);
+		//PlotSheet currentPlots();
+
+		//static void copySettings(QSettings& sFrom, QSettings& sTo);
+
+	private:
+		GlobalPlotParams();
+		~GlobalPlotParams();
+
+		DotPlotParams* mParams;
+		//BasicGLWidget* mBaseViewPort;
+		//PlotSheet mPlotSheet;
+	};
 	
 	// this class will hold the toolbar (if needed)
 	class DllExport DotPlot : public BasePlot {
@@ -106,7 +135,6 @@ namespace pie {
 		virtual ~DotPlot() {}
 
 		void showDecorations(bool show = true);
-		DotViewPort* viewport() const;
 		MenuButton* menuButton() const;
 
 		virtual QPoint axisIndex() const;

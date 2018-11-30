@@ -33,6 +33,7 @@
 #include "WidgetManager.h"
 #include "ActionManager.h"
 #include "Utils.h"
+#include "Plot.h"
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QGridLayout>
@@ -45,17 +46,17 @@ namespace pie {
 
 
 	// PlotParams --------------------------------------------------------------------
-	PlotParams::PlotParams(QObject* parent, bool /*isGlobal*/) : QObject(parent) {
+	PlotParams::PlotParams(QObject* parent, bool isGlobal) : QObject(parent) {
 
-		//if (!isGlobal) {
-		//	// connect with global params
-		//	PlotParams* gb = DkGlobalPlotParams::instance().params();
-		//	connectWith(gb);
+		if (!isGlobal) {
+			// connect with global params
+			PlotParams* gb = GlobalPlotParams::instance().params();
+			connectWith(gb);
 
-		//	// take global settings
-		//	mMinimumSize = gb->minimumSize();
-		//	mNumColumns = gb->numColumns();
-		//}
+			// take global settings
+			mMinimumSize = gb->minimumSize();
+			mNumColumns = gb->numColumns();
+		}
 	}
 
 	void PlotParams::connectWith(PlotParams* params) {

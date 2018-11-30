@@ -35,6 +35,7 @@
 #include "Utils.h"
 #include "PlotGL.h"
 #include "PlotWidgets.h"
+#include "Settings.h"
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QGridLayout>
@@ -53,19 +54,16 @@ namespace pie {
 
 		mMode = m_dot_plot;
 
-		//if (!isGlobal) {
-		//	// connect with global params
-		//	PlotParams* gb = DkGlobalPlotParams::instance().dotPlotParams();
-		//	connectWith(gb);
+		if (!isGlobal) {
+			// connect with global params
+			DotPlotParams* gb = GlobalPlotParams::instance().dotPlotParams();
+			connectWith(gb);
 
-		//	// take global settings
-		//	mDisplayPercent = gb->displayPercent();
-		//	mPointSize = gb->pointSize();
-		//	mPointAlpha = gb->alpha();
-		//	mShowGrid = gb->showGrid();
-		//	mShowEllipse = gb->showEllipse();
-		//	mShowGates = gb->showGates();
-		//}
+			// take global settings
+			mDisplayPercent = gb->displayPercent();
+			mPointSize = gb->pointSize();
+			mPointAlpha = gb->alpha();
+		}
 	}
 
 	void DotPlotParams::connectWith(DotPlotParams* param) {
@@ -162,8 +160,8 @@ namespace pie {
 		createLayout();
 
 		// viewport connects
-		connect(mXAxisLabel, SIGNAL(changeAxisIndex(const QPoint&)), viewport(), SLOT(setAxisIndex(const QPoint&)));
-		connect(mYAxisLabel, SIGNAL(changeAxisIndex(const QPoint&)), viewport(), SLOT(setAxisIndex(const QPoint&)));
+		connect(mXAxisLabel, SIGNAL(changeAxisIndex(const QPoint&)), mViewPort, SLOT(setAxisIndex(const QPoint&)));
+		connect(mYAxisLabel, SIGNAL(changeAxisIndex(const QPoint&)), mViewPort, SLOT(setAxisIndex(const QPoint&)));
 	}
 
 	void DotPlot::createLayout() {
@@ -265,10 +263,6 @@ namespace pie {
 	//	}
 	//}
 
-	DotViewPort* DotPlot::viewport() const {
-		return mViewPort;
-	}
-
 	//void DotPlot::addParams(const PlotParams* params) {
 	//	params->copyTo(mP);	// update our parameters
 	//	//mapAxisIndex();
@@ -281,6 +275,144 @@ namespace pie {
 	MenuButton * DotPlot::menuButton() const {
 		return mMenuButton;
 	}
+
+	// DkGlobalPlotParams --------------------------------------------------------------------
+	GlobalPlotParams::GlobalPlotParams() {
+
+		//mBaseViewPort = 0;
+		mParams = new DotPlotParams(0, true);
+
+		DefaultSettings ds;
+		load(ds);
+
+		ActionManager& m = ActionManager::instance();
+
+		QObject::connect(m.action(m.view_decrease_num_plots), SIGNAL(triggered()), mParams, SLOT(decreaseNumColumns()));
+		QObject::connect(m.action(m.view_increase_num_plots), SIGNAL(triggered()), mParams, SLOT(increaseNumColumns()));
+	}
+
+	GlobalPlotParams::~GlobalPlotParams() {
+
+		delete mParams;
+		mParams = 0;
+	}
+
+	DotPlotParams* GlobalPlotParams::dotPlotParams() const {
+		return mParams;
+	}
+
+	PlotParams* GlobalPlotParams::params() const {
+		return mParams;
+	}
+
+	//void GlobalPlotParams::setInitialPlots(const QVector<PlotParams*>& params) {
+
+	//	// housekeeping
+	//	for (PlotParams* p : mPlotSheet.plots())
+	//		p->deleteLater();
+	//	mPlotSheet.clear();
+
+	//	for (const PlotParams* p : params) {
+
+	//		DkPlotParams* nP = 0;
+
+	//		// we need to own these params
+	//		if (p->mode() == DkPlotParams::m_generic)
+	//			nP = new DkPlotParams(mParams);
+	//		else if (p->mode() == DkPlotParams::m_hist)
+	//			nP = new DkHistParams(mParams);
+	//		else if (p->mode() == DkPlotParams::m_dot_plot)
+	//			nP = new DkDotPlotParams(mParams);
+	//		else
+	//			qWarning() << "unknown mode: " << p->mode();
+
+	//		if (nP) {
+	//			p->copyTo(nP);
+	//			mPlotSheet.append(nP);
+	//		}
+	//	}
+	//}
+
+	//PlotSheet GlobalPlotParams::loadPlots(const QString& profileName) {
+
+	//	QString loadProfile = profileName;
+
+	//	DefaultSettings settings;
+	//	settings.beginGroup("DkPlots");
+
+	//	if (loadProfile.isEmpty()) {
+
+	//		QStringList profileStrings = settings.childGroups();
+	//		loadProfile = settings.value("DefaultProfileString", (profileStrings.empty()) ? "" : profileStrings[0]).toString();
+	//	}
+
+	//	mPlotSheet = DkPlotSheet::loadPlots(settings, mParams, loadProfile);
+	//	settings.endGroup();
+
+	//	return mPlotSheet;
+	//}
+
+	//PlotSheet DkGlobalPlotParams::currentPlots() {
+
+	//	if (mPlotSheet.empty()) {
+	//		return loadPlots();
+	//	}
+
+	//	return mPlotSheet;
+	//}
+
+	//void GlobalPlotParams::copySettings(QSettings & sFrom, QSettings & sTo) {
+
+	//	QVector<PlotSheet> ps = GlobalPlotParams::instance().loadAllPlots(sFrom);
+
+	//	sTo.beginGroup("DkPlots");
+	//	for (auto p : ps)
+	//		p.save(sTo);
+	//	sTo.endGroup();
+	//}
+
+	GlobalPlotParams& GlobalPlotParams::instance() {
+
+		static GlobalPlotParams inst;
+		return inst;
+	}
+
+	void GlobalPlotParams::save(QSettings& settings) const {
+
+		settings.beginGroup("GlobalParams");
+		mParams->save(settings);
+		settings.endGroup();
+	}
+
+	//void DkGlobalPlotParams::saveAllPlots(QSettings & settings, const QVector<DkPlotSheet>& plots) const {
+
+	//	for (const DkPlotSheet& ps : plots) {
+	//		ps.save(settings);
+	//	}
+	//}
+
+	void GlobalPlotParams::load(QSettings& settings) {
+
+		settings.beginGroup("GlobalParams");
+		mParams->load(settings);
+		settings.endGroup();
+	}
+
+	//QVector<DkPlotSheet> DkGlobalPlotParams::loadAllPlots(QSettings& settings) {
+
+	//	settings.beginGroup("DkPlots");
+	//	QStringList profiles = settings.childGroups();
+
+	//	QVector<DkPlotSheet> ap;
+
+	//	for (auto pn : profiles) {
+	//		ap << DkPlotSheet::loadPlots(settings, DkUtils::getMainWindow(), pn);
+	//	}
+
+	//	settings.endGroup();
+
+	//	return ap;
+	//}
 
 	// PlotWidget --------------------------------------------------------------------
 	PlotWidget::PlotWidget(QSharedPointer<Collection> collection, QWidget* parent /* = 0 */) : Widget(parent) {
@@ -323,13 +455,13 @@ namespace pie {
 		layout->setContentsMargins(0, 0, 0, 0);
 		layout->addWidget(scrollArea);
 
-		//ActionManager& m = ActionManager::instance();
-		//connect(m.action(m.edit_add_dot_plot), SIGNAL(triggered()), this, SLOT(addDotPlot()));
-		//connect(m.action(m.edit_select_all), SIGNAL(triggered(bool)), this, SLOT(selectAll(bool)));
+		ActionManager& m = ActionManager::instance();
+		connect(m.action(m.edit_add_dot_plot), SIGNAL(triggered()), this, SLOT(addPlot()));
+		connect(m.action(m.edit_select_all), SIGNAL(triggered(bool)), this, SLOT(selectAll(bool)));
 
 		connect(mNewPlotWidget, SIGNAL(newDotPlotSignal()), this, SLOT(addPlot()));
 
-		//connect(DkGlobalPlotParams::instance().params(), SIGNAL(numColumnsChanged(int)), this, SLOT(setNumColumns(int)));
+		connect(GlobalPlotParams::instance().params(), SIGNAL(numColumnsChanged(int)), this, SLOT(setNumColumns(int)));
 		//connect(DkGlobalPlotParams::instance().params(), SIGNAL(loadPlotsSignal(const QString&)), this, SLOT(loadPlots(const QString&)));
 		//connect(DkGlobalPlotParams::instance().params(), SIGNAL(savePlotsSignal(const QString&)), this, SLOT(savePlots(const QString&)));
 	}

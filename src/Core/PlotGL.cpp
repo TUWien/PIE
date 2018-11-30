@@ -65,7 +65,7 @@ namespace pie {
 		ActionManager& m = ActionManager::instance();
 		connect(m.action(ActionManager::view_zoom_in), SIGNAL(triggered()), this, SLOT(zoomIn()));
 		connect(m.action(ActionManager::view_zoom_out), SIGNAL(triggered()), this, SLOT(zoomOut()));
-		//connect(m.action(ActionManager::view_reset), SIGNAL(triggered()), this, SLOT(resetView()));
+		connect(m.action(ActionManager::view_reset), SIGNAL(triggered()), this, SLOT(resetView()));
 		//connect(m.action(ActionManager::view_update), SIGNAL(triggered()), this, SLOT(update()));
 	};
 
@@ -572,7 +572,7 @@ namespace pie {
 	bool DotViewPort::parentHasFocus() const {
 
 		auto p = dynamic_cast<QWidget*>(parent());
-		return hasFocus() || (p && (p->hasFocus() || mIsSelected));
+		return hasFocus() || (p && p->hasFocus()) || mIsSelected;
 	}
 
 	void DotViewPort::setAxisIndex(const QPoint& dims) {

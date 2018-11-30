@@ -76,6 +76,8 @@ public:
 		view_decrease_num_plots,
 		view_increase_num_plots,
 
+		view_reset,
+
 		view_end
 	};
 
@@ -105,6 +107,8 @@ public:
 		sc_view_zoom_out = Qt::Key_Minus,
 		sc_view_decrease_num_plots = Qt::CTRL + Qt::Key_Plus,	// decreasing numbers -> increases size (that's why it is plus)
 		sc_view_increase_num_plots = Qt::CTRL + Qt::Key_Minus,
+		
+		sc_view_reset = Qt::CTRL + Qt::Key_0,
 
 		sc_view_new_tab = Qt::CTRL + Qt::Key_T,
 		sc_view_close_tab = Qt::CTRL + Qt::Key_W,

@@ -181,6 +181,10 @@ void ActionManager::createActions() {
 	mViewAction[view_close_tab]->setToolTip(QObject::tr("Close the current tab."));
 	mViewAction[view_close_tab]->setShortcut(QKeySequence(sc_view_close_tab));
 
+	mViewAction[view_reset] = new QAction(QObject::tr("&Reset View"), 0);
+	mViewAction[view_reset]->setToolTip(QObject::tr("Reset transformations of selected plot(s)."));
+	mViewAction[view_reset]->setShortcut(QKeySequence(sc_view_reset));
+
 	// edit actions
 	mEditAction.resize(edit_end);
 
