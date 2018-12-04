@@ -111,6 +111,10 @@ namespace pie {
 		return mContent;
 	}
 
+	QString PageData::collectionName() const {
+		return mCollectionName;
+	}
+
 	PageData PageData::fromJson(const QJsonObject & jo) {
 
 		PageData pd;
@@ -172,6 +176,14 @@ namespace pie {
 
 	QColor BaseCollection::color() const {
 		return mColor;
+	}
+
+	void BaseCollection::setSelected(bool selected) {
+		mSelected = selected;
+	}
+
+	bool BaseCollection::selected() const {
+		return mSelected;
 	}
 
 	// -------------------------------------------------------------------- Document 
@@ -260,6 +272,13 @@ namespace pie {
 		msg += QString::number(nt) + " pages with text";
 
 		return msg;
+	}
+
+	void Collection::selectAll(bool selected) {
+
+		for (auto p : documents())
+			p->setSelected(selected);
+
 	}
 
 	int Collection::numRegions() const {

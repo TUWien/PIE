@@ -84,6 +84,8 @@ namespace pie {
 		case m_reg_area:	return QSharedPointer<AreaMapper>::create();
 		case m_img_width:	return QSharedPointer<PageWidthMapper>::create();
 		case m_img_height:	return QSharedPointer<PageHeightMapper>::create();
+		case m_undefined:
+		case m_end: break;
 		}
 
 		if (type != m_undefined)

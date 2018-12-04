@@ -35,7 +35,10 @@
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QPixmap>
+#include <QListWidgetItem>
 #pragma warning(pop)
+
+#pragma warning(disable: 4251)	// disable dll interface warning
 
 #ifndef DllExport
 #ifdef DLL_CORE_EXPORT
@@ -50,10 +53,13 @@ class QCheckBox;
 class QGridLayout;
 class QSettings;
 class QMimeData;
+class QListWidget;
 
 namespace pie {
 
 	class PlotParams;
+	class Collection;
+	class Document;
 
 	class DllExport AxisButton : public OrButton {
 		Q_OBJECT
@@ -108,5 +114,34 @@ namespace pie {
 
 	protected:
 		void createLayout();
+	};
+
+	class DllExport DocumentItem : public QListWidgetItem {
+
+	public:
+		DocumentItem(QSharedPointer<Document>& document, QListWidget* parent = 0);
+
+		QSharedPointer<Document> document() const;
+
+	private:
+		QSharedPointer<Document> mDoc;
+	};
+
+	class DllExport LegendWidget : public Widget {
+		Q_OBJECT
+
+	public:
+		LegendWidget(QSharedPointer<Collection> collection, QWidget* parent = 0);
+
+	signals:
+		void updateSignal();
+
+	private:
+		void contextMenuEvent(QContextMenuEvent* ev) override;
+		void createLayout();
+		void updateList(QSharedPointer<Collection> col);
+
+		QListWidget* mLegendList = 0;
+		QSharedPointer<Collection> mCollection = 0;
 	};
 }

@@ -59,6 +59,7 @@ namespace pie {
 	class MenuButton;
 	class AxisButton;
 	class NewPlotWidget;
+	class LegendWidget;
 
 	class DllExport DotPlotParams : public PlotParams {
 		Q_OBJECT
@@ -94,7 +95,7 @@ namespace pie {
 
 		int mDisplayPercent = 100;
 		int mPointSize = 1;
-		int mPointAlpha = 100;
+		int mPointAlpha = 255;
 	};
 
 	class DllExport GlobalPlotParams {
@@ -145,6 +146,7 @@ namespace pie {
 	public slots:
 		virtual void setAxisIndex(const QPoint& index);
 		void setMinimumSize(const QSize& size);
+		void update();
 
 	protected:
 		void createLayout();
@@ -203,7 +205,8 @@ namespace pie {
 
 		QVector<BasePlot*> mPlots;
 
-		NewPlotWidget* mNewPlotWidget;
+		NewPlotWidget* mNewPlotWidget = 0;
+		LegendWidget* mLegendWidget = 0;	// *ary
 
 		int mLastShiftIdx = -1;
 		int mNumColumns = 3;

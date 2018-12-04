@@ -125,6 +125,7 @@ public:
 	QVector<QSharedPointer<Region> > regions() const;
 	QString name() const;
 	QString text() const;
+	QString collectionName() const;
 
 	ImageData image() const;
 	double averageRegion(std::function<double(const Region&)> prop) const;
@@ -154,10 +155,14 @@ public:
 	virtual QColor color() const;
 
 	virtual QVector<QSharedPointer<PageData> > pages() const = 0;
+	
+	virtual void setSelected(bool selected);
+	bool selected() const;
 
 private:
 	QString mName;
 	QColor mColor;
+	bool mSelected = false;
 };
 
 class DllExport Document : public BaseCollection {
@@ -191,6 +196,8 @@ public:
 	QVector<QSharedPointer<Document> > documents() const;
 
 	QString toString() const override;
+	
+	void selectAll(bool selected = true);
 
 private:
 	int numRegions() const;

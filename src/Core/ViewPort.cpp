@@ -67,17 +67,13 @@ namespace pie {
 		connect(m.action(ActionManager::view_zoom_out), SIGNAL(triggered()), this, SLOT(zoomOut()));
 		connect(m.action(ActionManager::view_reset), SIGNAL(triggered()), this, SLOT(resetView()));
 		//connect(m.action(ActionManager::view_update), SIGNAL(triggered()), this, SLOT(update()));
-	};
+	}
 
 	void DotViewPort::initializeGL() {
 
 		// member init
 		// turn point sprites on
 		glPointSize((GLfloat)mP->pointSize());
-
-		// turn alpha blending on
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_BLEND);
 	}
 
 	void DotViewPort::resizeGL(int w, int h) {
@@ -149,6 +145,10 @@ namespace pie {
 		// enable alpha blending
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_BLEND);
+
+		// enable z-buffer
+		glDepthFunc(GL_LESS);
+		glEnable(GL_DEPTH_TEST);
 
 		applyGLTransform();
 
@@ -255,6 +255,8 @@ namespace pie {
 
 		if (!mCollection || !mXMapper || !mYMapper)
 			return false;	// nothing todo here
+		
+		qDebug() << "drawing...";
 
 		//glPointSize((GLfloat)mP->pointSize());
 		glPointSize(5);
@@ -273,8 +275,6 @@ namespace pie {
 
 		float skipFactor = (mP->displayPercent() == 100) ? 0.f : 1.f - mP->displayPercent() / 100.f;
 
-		QPoint dims = mP->axisIndex();
-
 		if (!mXMapper || !mYMapper)
 			return false; // illegal axis
 
@@ -291,7 +291,8 @@ namespace pie {
 			//	continue;
 
 			// set the color
-			const QColor& col = doc->color();
+			const QColor& col = !doc->selected() ? doc->color() : ColorManager::red();
+			float zIndex = doc->selected() ? 1.0f : 0.9f;
 			float alpha = col.alpha() == 255 ? mP->alpha() / 255.0f : col.alpha() / 255.0f;
 			glColor4f((GLfloat)col.redF(), (GLfloat)col.greenF(), (GLfloat)col.blueF(), (GLfloat)alpha);
 
@@ -313,7 +314,7 @@ namespace pie {
 				//int dataIdx = labels.empty() || !syncedData || (int)label[rIdx] >= events.rows ? rIdx : label[rIdx];
 				//const float* sample = events.ptr<float>(dataIdx);
 
-				glVertex3f(x[idx], y[idx], 1.0);
+				glVertex3f(x[idx], y[idx], zIndex);
 			}
 			start += doc->numPages();
 		}

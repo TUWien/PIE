@@ -32,10 +32,13 @@
 #include "PlotWidgets.h"
 #include "Utils.h"
 #include "Processor.h"
+#include "PageData.h"
+#include "GeneralWidgets.h"
 
 #pragma warning(disable: 4714)	// disable force inline warnings from Qt
 
 #pragma warning(push, 0)	// no warnings from includes
+#include <QListWidget>
 #include <QMouseEvent>
 #include <QMenu>
 #include <QGridLayout>
@@ -207,4 +210,101 @@ namespace pie {
 		connect(dotPlotButton, SIGNAL(clicked()), this, SIGNAL(newDotPlotSignal()));
 	}
 
+	// -------------------------------------------------------------------- DocumentItem 
+	DocumentItem::DocumentItem(QSharedPointer<Document>& document, QListWidget* parent) : QListWidgetItem(parent) {
+
+		mDoc = document;
+
+		QPixmap colIcon(32, 32);
+		QPainter p(&colIcon);
+		p.setPen(Qt::NoPen);
+		p.setBrush(document->color());
+		p.drawRect(colIcon.rect());
+
+		QString name = document->pages()[0]->collectionName() + " " + document->name() + " [" + QString::number(document->numPages()) + "]";
+
+		setText(name);
+		setIcon(colIcon);
+	}
+
+	QSharedPointer<Document> DocumentItem::document() const {
+		return mDoc;
+	}
+
+	// -------------------------------------------------------------------- LegendWidget 
+	LegendWidget::LegendWidget(QSharedPointer<Collection> collection, QWidget* parent) : Widget(parent) {
+		
+		mCollection = collection;
+		createLayout();
+		updateList(collection);
+	}
+
+	void LegendWidget::contextMenuEvent(QContextMenuEvent * ev) {
+
+		QMenu* m = new QMenu(tr("Choose a Color"), this);
+
+		ColorPicker* colWidget = new ColorPicker(this);
+
+		QWidgetAction* wa = new QWidgetAction(m);
+		wa->setDefaultWidget(colWidget);
+
+		m->exec(ev->pos());
+		m->deleteLater();
+	}
+
+	void LegendWidget::createLayout() {
+
+		mLegendList = new QListWidget(this);
+
+		QVBoxLayout* layout = new QVBoxLayout(this);
+		layout->setContentsMargins(0, 0, 0, 0);
+		layout->addWidget(mLegendList);
+
+		auto clickEvent = [&](QListWidgetItem* li) { 
+			
+			DocumentItem* di = dynamic_cast<DocumentItem*>(li);
+
+			if (di) {
+				mCollection->selectAll(false);
+				di->document()->setSelected(true);
+				emit updateSignal();
+			}
+		};
+
+		auto doubleClickEvent = [&](QListWidgetItem* li) {
+
+			DocumentItem* di = dynamic_cast<DocumentItem*>(li);
+
+			if (di) {
+				mCollection->selectAll(false);
+				di->document()->setSelected(true);
+				emit updateSignal();
+
+				// TODO: make this work
+				//QPoint pos = QWidget::mapFromGlobal(QCursor::pos()); 
+
+				//QMenu* m = new QMenu(tr("Choose a Color"), this);
+
+				//ColorPicker* colWidget = new ColorPicker(this);
+				//colWidget->resize(100, 100);
+
+				//QWidgetAction* wa = new QWidgetAction(m);
+				//wa->setDefaultWidget(colWidget);
+
+				//m->exec(pos);
+				//m->deleteLater();
+			}
+		};
+
+		connect(mLegendList, &QListWidget::itemClicked, this, clickEvent);
+		connect(mLegendList, &QListWidget::itemDoubleClicked, this, doubleClickEvent);
+	}
+
+	void LegendWidget::updateList(QSharedPointer<Collection> col) {
+
+		for (auto d : col->documents()) {
+
+			mLegendList->addItem(new DocumentItem(d, mLegendList));
+		}
+	}
 }

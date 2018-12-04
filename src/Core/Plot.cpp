@@ -212,6 +212,12 @@ namespace pie {
 		BasePlot::setMinimumSize(size);
 	}
 
+	void DotPlot::update() {
+
+		mViewPort->update();
+		BasePlot::update();
+	}
+
 	void DotPlot::setAxisIndex(const QPoint& index) {
 		mViewPort->setAxisIndex(index);
 	}
@@ -447,6 +453,9 @@ namespace pie {
 		mNewPlotWidget = new NewPlotWidget(this);
 		mNewPlotWidget->hide();
 
+		mLegendWidget = new LegendWidget(mCollection, this);
+		mLegendWidget->hide();
+
 		ResizableScrollArea* scrollArea = new ResizableScrollArea(this);
 		scrollArea->setObjectName("ScrollAreaPlots");
 		scrollArea->setWidgetResizable(true);
@@ -482,8 +491,10 @@ namespace pie {
 		}
 
 		mNewPlotWidget->show();
+		mLegendWidget->show();
 
 		// finally add the new plot widget
+		oLayout->addWidget(mLegendWidget, idx / mNumColumns, idx % mNumColumns); idx++;
 		oLayout->addWidget(mNewPlotWidget, idx / mNumColumns, idx % mNumColumns);
 	}
 
@@ -507,6 +518,7 @@ namespace pie {
 		connect(plot, SIGNAL(clearSelectionSignal()), this, SLOT(clearSelection()));
 		connect(plot, SIGNAL(shiftSelectionSignal(bool)), this, SLOT(shiftSelection(bool)));
 		connect(plot, SIGNAL(startShiftSelectionSignal()), this, SLOT(startShiftSelection()));
+		connect(mLegendWidget, SIGNAL(updateSignal()), plot, SLOT(update()));
 	}
 
 	

@@ -62,7 +62,7 @@ pie--RecentFilesWidget > QListView QScrollBar:horizontal {
 	height: 10px; 
 }
 
-pie--ResizableScrollArea QScrollBar:handle:vertical,
+pie--ResizableScrollArea QScrollBar:handle,
 pie--RecentFilesWidget > QListView QScrollBar:handle {
 	border: none; 
 	background: HIGHLIGHT_COLOR; 
@@ -161,4 +161,12 @@ pie--BasePlot:focus {
 
 pie--BasePlot[selected="true"] {
 	border-top: 2px solid SELECTION_COLOR;
+}
+
+pie--LegendWidget QListWidget {
+	border: none;
+}
+
+pie--DocumentInfo {
+	color: #666;
 }
