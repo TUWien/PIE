@@ -106,11 +106,17 @@ namespace pie {
 		return mImg.name();
 	}
 
+	QString PageData::text() const {
+		return mContent;
+	}
+
 	PageData PageData::fromJson(const QJsonObject & jo) {
 
 		PageData pd;
 		pd.mXmlFilePath = jo.value("xmlName").toString();
 		pd.mContent = jo.value("content").toString();
+		pd.mCollectionName = jo.value("collection").toString();
+		pd.mDocumentName = jo.value("document").toString();
 		pd.mImg = ImageData::fromJson(jo);
 
 		QJsonArray regions = jo.value("regions").toArray();
@@ -118,39 +124,6 @@ namespace pie {
 			pd.mRegions << QSharedPointer<Region>::create(Region::fromJson(r.toObject()));
 
 		return pd;
-	}
-
-	// -------------------------------------------------------------------- Collection 
-	Collection::Collection(const QString& name) {
-		mName = name;
-	}
-
-	Collection Collection::fromJson(const QJsonObject & jo, const QString& name) {
-
-		Collection c(name);
-
-		QJsonArray pages = jo.value("imgs").toArray();
-		for (auto p : pages)
-			c.mPages << QSharedPointer<PageData>::create(PageData::fromJson(p.toObject()));
-
-		return c;
-
-	}
-
-	bool Collection::isEmpty() {
-		return mPages.isEmpty();
-	}
-
-	int Collection::size() const {
-		return mPages.size();
-	}
-
-	QString Collection::name() const {
-		return mName;
-	}
-
-	QVector<QSharedPointer<PageData>> Collection::pages() const {
-		return mPages;
 	}
 	
 	// -------------------------------------------------------------------- ImageData 
@@ -182,4 +155,163 @@ namespace pie {
 
 		return id;
 	}
+
+	// -------------------------------------------------------------------- BaseCollection 
+	BaseCollection::BaseCollection(const QString& name) {
+		mName = name;
+	}
+	
+	QString BaseCollection::name() const {
+		return mName;
+	}
+
+	// -------------------------------------------------------------------- Document 
+	Document::Document(const QString & name) : BaseCollection(name) {
+	}
+
+	bool Document::isEmpty() const {
+		return mPages.isEmpty();
+	}
+
+	int Document::numPages() const {
+		return mPages.size();
+	}
+	QVector<QSharedPointer<PageData> > Document::pages() const {
+		return mPages;
+	}
+
+	Document Document::fromJson(const QJsonObject & jo) {
+
+		Document c(jo["name"].toString());
+
+		QJsonArray entities = jo.value("pages").toArray();
+		for (auto p : entities)
+			c.mPages << QSharedPointer<PageData>::create(PageData::fromJson(p.toObject()));
+
+		return c;
+	}
+
+	// -------------------------------------------------------------------- Collection 
+	Collection::Collection(const QString& name) : BaseCollection(name) {
+	}
+
+	Collection Collection::fromJson(const QJsonObject & jo) {
+
+		Collection c(jo["name"].toString());
+
+		QJsonArray entities = jo.value("documents").toArray();
+		for (auto p : entities)
+			c.mDocuments << QSharedPointer<Document>::create(Document::fromJson(p.toObject()));
+
+		return c;
+
+	}
+
+	bool Collection::isEmpty() const {
+		return mDocuments.isEmpty();
+	}
+
+	int Collection::numPages() const {
+		
+		int s = 0;
+		for (auto d : mDocuments)
+			s += d->numPages();
+		
+		return s;
+	}
+
+	int Collection::numDocuments() const {
+		return mDocuments.size();
+	}
+
+	QVector<QSharedPointer<PageData>> Collection::pages() const {
+
+		QVector<QSharedPointer<PageData> > ps;
+
+		for (auto d : mDocuments)
+			ps << d->pages();
+
+		return ps;
+	}
+
+	// -------------------------------------------------------------------- RootCollection 
+	RootCollection::RootCollection(const QString & name) : BaseCollection(name) {
+	}
+
+	RootCollection RootCollection::fromJson(const QJsonObject & jo, const QString& name) {
+		
+		RootCollection rc(name);
+
+		QJsonArray entities = jo.value("collections").toArray();
+		for (auto p : entities)
+			rc.mCollections << QSharedPointer<Collection>::create(Collection::fromJson(p.toObject()));
+
+		return rc;
+	}
+
+	bool RootCollection::isEmpty() const {
+		return mCollections.isEmpty();
+	}
+
+	int RootCollection::numPages() const {
+		
+		int s = 0;
+		for (auto c : mCollections)
+			s += c->numPages();
+		
+		return s;
+	}
+
+	QVector<QSharedPointer<PageData>> RootCollection::pages() const {
+		
+		QVector<QSharedPointer<PageData>> ps;
+		for (auto c : mCollections)
+			ps << c->pages();
+		
+		return ps;
+	}
+
+	QString RootCollection::toString() const {
+
+		int nr = numRegions();
+		int nt = numTextPages();
+
+		QString msg;
+		msg += QString::number(numPages()) + " pages found.\n";
+		msg += QString::number(numDocuments()) + " documents in " + QString::number(mCollections.size()) + " collections\n";
+		msg += QString::number(nr) + " regions (" + QString::number((double)nr / numPages()) + " per page)\n";
+		msg += QString::number(nt) + " pages with text";
+
+		return msg;
+	}
+
+	int RootCollection::numRegions() const {
+
+		int nr = 0;
+		for (auto p : pages())
+			nr += p->numRegions();
+
+		return nr;
+	}
+
+	int RootCollection::numTextPages() const {
+
+		int ntp = 0;
+		for (auto p : pages()) {
+			if (!p->text().isEmpty())
+				ntp++;
+		}
+
+		return ntp;
+	}
+
+	int RootCollection::numDocuments() const {
+		
+		int s = 0;
+		for (auto c : mCollections)
+			s += c->numDocuments();
+
+		return s;
+	}
+
 }

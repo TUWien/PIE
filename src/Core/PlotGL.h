@@ -64,7 +64,7 @@ namespace pie {
 		Q_OBJECT
 
 	public:
-		DotViewPort(QSharedPointer<Collection> collection, DotPlotParams* params, DotPlot* parent = 0);
+		DotViewPort(QSharedPointer<RootCollection> collection, DotPlotParams* params, DotPlot* parent = 0);
 	virtual ~DotViewPort() {}
 
 		void moveView(const QPointF& dxy);
@@ -113,7 +113,7 @@ namespace pie {
 
 		QPoint mFirstMousePos;
 		QPoint mLastMousePos;
-		QSharedPointer<Collection> mCollection;
+		QSharedPointer<RootCollection> mCollection;
 
 		//DkSolarSystem* mSystem = 0;
 		DotPlotParams* mP;

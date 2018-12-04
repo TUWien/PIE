@@ -131,7 +131,7 @@ namespace pie {
 		Q_OBJECT
 
 	public:
-		DotPlot(QSharedPointer<Collection> collection, QWidget* parent = 0);
+		DotPlot(QSharedPointer<RootCollection> collection, QWidget* parent = 0);
 		virtual ~DotPlot() {}
 
 		void showDecorations(bool show = true);
@@ -163,7 +163,7 @@ namespace pie {
 		Q_OBJECT
 
 	public:
-		PlotWidget(QSharedPointer<Collection> collection, QWidget* parent = 0);
+		PlotWidget(QSharedPointer<RootCollection> collection, QWidget* parent = 0);
 		virtual ~PlotWidget();
 
 		QString title() const;
@@ -199,7 +199,6 @@ namespace pie {
 		void connectPlot(BasePlot* plot);
 
 		//void saveSettings() const;
-
 		//void backup();
 
 		QVector<BasePlot*> mPlots;
@@ -210,7 +209,7 @@ namespace pie {
 		int mNumColumns = 3;
 		QGridLayout* oLayout;
 
-		QSharedPointer<Collection> mCollection;
+		QSharedPointer<RootCollection> mCollection;
 	};
 
 }

@@ -123,7 +123,8 @@ public:
 	int numRegions() const;
 	QVector<QSharedPointer<Region> > regions() const;
 	QString name() const;
-	
+	QString text() const;
+
 	ImageData image() const;
 	double averageRegion(std::function<double(const Region&)> prop) const;
 
@@ -133,26 +134,80 @@ private:
 	QString mXmlFilePath;
 	QString mContent;
 	ImageData mImg;
+	QString mDocumentName;
+	QString mCollectionName;
 
 	QVector<QSharedPointer<Region> > mRegions;
 };
 
-class DllExport Collection {
+class DllExport BaseCollection : public BaseElement {
+
+public:
+	BaseCollection(const QString& name = "");
+
+	virtual QString name() const;
+	virtual bool isEmpty() const = 0;
+	virtual int numPages() const = 0;
+
+	virtual QVector<QSharedPointer<PageData> > pages() const = 0;
+
+private:
+	QString mName;
+};
+
+class DllExport Document : public BaseCollection {
+
+public:
+	Document(const QString& name = "");
+
+	bool isEmpty() const override;
+	int numPages() const override;
+	QVector<QSharedPointer<PageData> > pages() const override;
+
+	static Document fromJson(const QJsonObject& jo);
+
+private:
+	QVector<QSharedPointer<PageData> > mPages;
+
+};
+
+class DllExport Collection : public BaseCollection {
 
 public:
 	Collection(const QString& name = "");
 
-	static Collection fromJson(const QJsonObject& jo, const QString& name);
+	static Collection fromJson(const QJsonObject& jo);
 
-	bool isEmpty();
+	bool isEmpty() const override;
 
-	int size() const;
-	QString name() const;
-	QVector<QSharedPointer<PageData> > pages() const;
+	int numPages() const override;
+	int numDocuments() const;
+	QVector<QSharedPointer<PageData> > pages() const override;
 
 private:
-	QString mName;
-	QVector<QSharedPointer<PageData> > mPages;
+	QVector<QSharedPointer<Document> > mDocuments;
+};
+
+class DllExport RootCollection : public BaseCollection {
+
+public:
+	RootCollection(const QString& name = "");
+
+	static RootCollection fromJson(const QJsonObject& jo, const QString& name = "");
+
+	bool isEmpty() const override;
+	int numPages() const override;
+
+	QVector<QSharedPointer<PageData> > pages() const override;
+
+	QString toString() const override;
+
+private:
+	int numRegions() const;
+	int numTextPages() const;
+	int numDocuments() const;
+
+	QVector<QSharedPointer<Collection> > mCollections;
 };
 
 }

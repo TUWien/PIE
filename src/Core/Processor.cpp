@@ -46,7 +46,7 @@ namespace pie {
 		return pd->numRegions();
 	}
 
-	bool test::Processor(const Collection& c) {
+	bool test::Processor(const RootCollection& c) {
 
 		auto widths		= [&](const Region& r) { return r.width(); };
 		auto heights	= [&](const Region& r) { return r.height(); };
@@ -64,12 +64,12 @@ namespace pie {
 	}
 	
 	// -------------------------------------------------------------------- DisplayConverter 
-	DisplayConverter::DisplayConverter(QSharedPointer<Collection> collection) {
-		mCollection = collection;
+	DisplayConverter::DisplayConverter(QSharedPointer<RootCollection> RootCollection) {
+		mRootCollection = RootCollection;
 	}
 
 	cv::Mat DisplayConverter::map(QSharedPointer<AbstractMapper> mapper) const {
-		return mapper->process(mCollection.data());
+		return mapper->process(mRootCollection.data());
 	}
 
 	// -------------------------------------------------------------------- Mapper 
@@ -100,17 +100,17 @@ namespace pie {
 	}
 
 	// -------------------------------------------------------------------- RegionMapper 
-	cv::Mat RegionMapper::process(Collection * c) const {
+	cv::Mat RegionMapper::process(RootCollection * c) const {
 
 		if (!c) {
-			qWarning() << "cannot process empty collection";
+			qWarning() << "cannot process empty RootCollection";
 			return cv::Mat();
 		}
 
 		std::function<double(const Region&)> fr = processor();
 
 		// OpenGL only knows floats
-		cv::Mat dv(1, c->size(), CV_32FC1);
+		cv::Mat dv(1, c->numPages(), CV_32FC1);
 		float* px = dv.ptr<float>();
 
 		for (auto p : c->pages()) {
@@ -127,17 +127,17 @@ namespace pie {
 	}
 
 	// -------------------------------------------------------------------- PageMapper 
-	cv::Mat PageMapper::process(Collection * c) const {
+	cv::Mat PageMapper::process(RootCollection * c) const {
 
 		if (!c) {
-			qWarning() << "cannot process empty collection";
+			qWarning() << "cannot process empty RootCollection";
 			return cv::Mat();
 		}
 
 		std::function<double(const PageData&)> pr = processor();
 
 		// OpenGL only knows floats
-		cv::Mat dv(1, c->size(), CV_32FC1);
+		cv::Mat dv(1, c->numPages(), CV_32FC1);
 		float* px = dv.ptr<float>();
 
 		for (auto p : c->pages()) {

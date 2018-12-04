@@ -45,7 +45,7 @@
 
 namespace pie {
 
-	DotViewPort::DotViewPort(QSharedPointer<Collection> collection, DotPlotParams* params, DotPlot* parent) : QOpenGLWidget(parent) {
+	DotViewPort::DotViewPort(QSharedPointer<RootCollection> collection, DotPlotParams* params, DotPlot* parent) : QOpenGLWidget(parent) {
 
 		mCollection = collection;
 		mP = params;
