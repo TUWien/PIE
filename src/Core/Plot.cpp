@@ -33,7 +33,7 @@
 #include "WidgetManager.h"
 #include "ActionManager.h"
 #include "Utils.h"
-#include "PlotGL.h"
+#include "ViewPort.h"
 #include "PlotWidgets.h"
 #include "Settings.h"
 
@@ -149,7 +149,7 @@ namespace pie {
 	}
 
 	// DotPlot --------------------------------------------------------------------
-	DotPlot::DotPlot(QSharedPointer<RootCollection> collection, QWidget* parent /* = 0 */) : BasePlot(parent) {
+	DotPlot::DotPlot(QSharedPointer<Collection> collection, QWidget* parent /* = 0 */) : BasePlot(parent) {
 
 		mP = new DotPlotParams(this);
 		setObjectName("DotPlot");
@@ -415,7 +415,7 @@ namespace pie {
 	//}
 
 	// PlotWidget --------------------------------------------------------------------
-	PlotWidget::PlotWidget(QSharedPointer<RootCollection> collection, QWidget* parent /* = 0 */) : Widget(parent) {
+	PlotWidget::PlotWidget(QSharedPointer<Collection> collection, QWidget* parent /* = 0 */) : Widget(parent) {
 
 		mCollection = collection;
 

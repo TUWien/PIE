@@ -131,10 +131,10 @@ namespace pie {
 		Q_OBJECT
 
 	public:
-		DotPlot(QSharedPointer<RootCollection> collection, QWidget* parent = 0);
+		DotPlot(QSharedPointer<Collection> collection, QWidget* parent = 0);
 		virtual ~DotPlot() {}
 
-		void showDecorations(bool show = true);
+		//void showDecorations(bool show = true);
 		MenuButton* menuButton() const;
 
 		virtual QPoint axisIndex() const;
@@ -148,7 +148,7 @@ namespace pie {
 
 	protected:
 		void createLayout();
-		void mapAxisIndex();	// apply the axis name (different between experiments) to the axis index
+		//void mapAxisIndex();	// apply the axis name (different between experiments) to the axis index
 
 		AxisButton* mXAxisLabel;
 		AxisButton* mYAxisLabel;
@@ -163,7 +163,7 @@ namespace pie {
 		Q_OBJECT
 
 	public:
-		PlotWidget(QSharedPointer<RootCollection> collection, QWidget* parent = 0);
+		PlotWidget(QSharedPointer<Collection> collection, QWidget* parent = 0);
 		virtual ~PlotWidget();
 
 		QString title() const;
@@ -209,7 +209,7 @@ namespace pie {
 		int mNumColumns = 3;
 		QGridLayout* oLayout;
 
-		QSharedPointer<RootCollection> mCollection;
+		QSharedPointer<Collection> mCollection;
 	};
 
 }

@@ -36,6 +36,7 @@
 #pragma warning(push, 0)	// no warnings from includes
 #include <QVector>
 #include <QSize>
+#include <QColor>
 
 #include <functional>
 #pragma warning(pop)
@@ -148,11 +149,15 @@ public:
 	virtual QString name() const;
 	virtual bool isEmpty() const = 0;
 	virtual int numPages() const = 0;
+	
+	virtual void setColor(const QColor& col);
+	virtual QColor color() const;
 
 	virtual QVector<QSharedPointer<PageData> > pages() const = 0;
 
 private:
 	QString mName;
+	QColor mColor;
 };
 
 class DllExport Document : public BaseCollection {
@@ -176,38 +181,22 @@ class DllExport Collection : public BaseCollection {
 public:
 	Collection(const QString& name = "");
 
-	static Collection fromJson(const QJsonObject& jo);
+	static Collection fromJson(const QJsonObject& jo, const QString& name = "");
 
 	bool isEmpty() const override;
 
 	int numPages() const override;
 	int numDocuments() const;
 	QVector<QSharedPointer<PageData> > pages() const override;
-
-private:
-	QVector<QSharedPointer<Document> > mDocuments;
-};
-
-class DllExport RootCollection : public BaseCollection {
-
-public:
-	RootCollection(const QString& name = "");
-
-	static RootCollection fromJson(const QJsonObject& jo, const QString& name = "");
-
-	bool isEmpty() const override;
-	int numPages() const override;
-
-	QVector<QSharedPointer<PageData> > pages() const override;
+	QVector<QSharedPointer<Document> > documents() const;
 
 	QString toString() const override;
 
 private:
 	int numRegions() const;
 	int numTextPages() const;
-	int numDocuments() const;
 
-	QVector<QSharedPointer<Collection> > mCollections;
+	QVector<QSharedPointer<Document> > mDocuments;
 };
 
 }

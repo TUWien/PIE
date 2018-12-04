@@ -46,7 +46,7 @@ namespace pie {
 		return pd->numRegions();
 	}
 
-	bool test::Processor(const RootCollection& c) {
+	bool test::Processor(const Collection& c) {
 
 		auto widths		= [&](const Region& r) { return r.width(); };
 		auto heights	= [&](const Region& r) { return r.height(); };
@@ -64,12 +64,12 @@ namespace pie {
 	}
 	
 	// -------------------------------------------------------------------- DisplayConverter 
-	DisplayConverter::DisplayConverter(QSharedPointer<RootCollection> RootCollection) {
-		mRootCollection = RootCollection;
+	DisplayConverter::DisplayConverter(QSharedPointer<Collection> Collection) {
+		mCollection = Collection;
 	}
 
 	cv::Mat DisplayConverter::map(QSharedPointer<AbstractMapper> mapper) const {
-		return mapper->process(mRootCollection.data());
+		return mapper->process(mCollection.data());
 	}
 
 	// -------------------------------------------------------------------- Mapper 
@@ -100,10 +100,10 @@ namespace pie {
 	}
 
 	// -------------------------------------------------------------------- RegionMapper 
-	cv::Mat RegionMapper::process(RootCollection * c) const {
+	cv::Mat RegionMapper::process(Collection * c) const {
 
 		if (!c) {
-			qWarning() << "cannot process empty RootCollection";
+			qWarning() << "cannot process empty Collection";
 			return cv::Mat();
 		}
 
@@ -127,10 +127,10 @@ namespace pie {
 	}
 
 	// -------------------------------------------------------------------- PageMapper 
-	cv::Mat PageMapper::process(RootCollection * c) const {
+	cv::Mat PageMapper::process(Collection * c) const {
 
 		if (!c) {
-			qWarning() << "cannot process empty RootCollection";
+			qWarning() << "cannot process empty Collection";
 			return cv::Mat();
 		}
 

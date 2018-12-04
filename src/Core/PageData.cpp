@@ -31,6 +31,7 @@
 
 #include "PageData.h"
 #include "Algorithm.h"
+#include "Utils.h"
 
 #pragma warning(push, 0)	// no warnings from includes
 #include <QJsonObject>
@@ -165,6 +166,14 @@ namespace pie {
 		return mName;
 	}
 
+	void BaseCollection::setColor(const QColor & col) {
+		mColor = col;
+	}
+
+	QColor BaseCollection::color() const {
+		return mColor;
+	}
+
 	// -------------------------------------------------------------------- Document 
 	Document::Document(const QString & name) : BaseCollection(name) {
 	}
@@ -182,22 +191,23 @@ namespace pie {
 
 	Document Document::fromJson(const QJsonObject & jo) {
 
-		Document c(jo["name"].toString());
+		Document d(jo["name"].toString());
+		d.setColor(ColorManager::randColor());
 
 		QJsonArray entities = jo.value("pages").toArray();
 		for (auto p : entities)
-			c.mPages << QSharedPointer<PageData>::create(PageData::fromJson(p.toObject()));
+			d.mPages << QSharedPointer<PageData>::create(PageData::fromJson(p.toObject()));
 
-		return c;
+		return d;
 	}
 
 	// -------------------------------------------------------------------- Collection 
 	Collection::Collection(const QString& name) : BaseCollection(name) {
 	}
 
-	Collection Collection::fromJson(const QJsonObject & jo) {
+	Collection Collection::fromJson(const QJsonObject & jo, const QString& name) {
 
-		Collection c(jo["name"].toString());
+		Collection c(name);
 
 		QJsonArray entities = jo.value("documents").toArray();
 		for (auto p : entities)
@@ -234,58 +244,25 @@ namespace pie {
 		return ps;
 	}
 
-	// -------------------------------------------------------------------- RootCollection 
-	RootCollection::RootCollection(const QString & name) : BaseCollection(name) {
+	QVector<QSharedPointer<Document>> Collection::documents() const {
+		return mDocuments;
 	}
 
-	RootCollection RootCollection::fromJson(const QJsonObject & jo, const QString& name) {
-		
-		RootCollection rc(name);
-
-		QJsonArray entities = jo.value("collections").toArray();
-		for (auto p : entities)
-			rc.mCollections << QSharedPointer<Collection>::create(Collection::fromJson(p.toObject()));
-
-		return rc;
-	}
-
-	bool RootCollection::isEmpty() const {
-		return mCollections.isEmpty();
-	}
-
-	int RootCollection::numPages() const {
-		
-		int s = 0;
-		for (auto c : mCollections)
-			s += c->numPages();
-		
-		return s;
-	}
-
-	QVector<QSharedPointer<PageData>> RootCollection::pages() const {
-		
-		QVector<QSharedPointer<PageData>> ps;
-		for (auto c : mCollections)
-			ps << c->pages();
-		
-		return ps;
-	}
-
-	QString RootCollection::toString() const {
+	QString Collection::toString() const {
 
 		int nr = numRegions();
 		int nt = numTextPages();
 
 		QString msg;
-		msg += QString::number(numPages()) + " pages found.\n";
-		msg += QString::number(numDocuments()) + " documents in " + QString::number(mCollections.size()) + " collections\n";
+		msg += QString::number(numPages()) + " pages found in " + QString::number(numDocuments()) + " documents\n";
+		msg += QString::number(numDocuments()) + " documents\n";
 		msg += QString::number(nr) + " regions (" + QString::number((double)nr / numPages()) + " per page)\n";
 		msg += QString::number(nt) + " pages with text";
 
 		return msg;
 	}
 
-	int RootCollection::numRegions() const {
+	int Collection::numRegions() const {
 
 		int nr = 0;
 		for (auto p : pages())
@@ -294,7 +271,7 @@ namespace pie {
 		return nr;
 	}
 
-	int RootCollection::numTextPages() const {
+	int Collection::numTextPages() const {
 
 		int ntp = 0;
 		for (auto p : pages()) {
@@ -303,15 +280,6 @@ namespace pie {
 		}
 
 		return ntp;
-	}
-
-	int RootCollection::numDocuments() const {
-		
-		int s = 0;
-		for (auto c : mCollections)
-			s += c->numDocuments();
-
-		return s;
 	}
 
 }

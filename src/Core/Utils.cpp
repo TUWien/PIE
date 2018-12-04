@@ -611,10 +611,11 @@ QVector<QColor> ColorManager::colors() {
 	static QVector<QColor> cols;
 
 	if (cols.empty()) {
-		cols << QColor(238, 120, 34);
-		cols << QColor(240, 168, 47);
-		cols << QColor(120, 192, 167);
-		cols << QColor(251, 234, 181);
+		cols << QColor(115, 0, 93);
+		cols << QColor(230, 23, 190);
+		cols << QColor(102, 80, 10);
+		cols << QColor(230, 178, 11);
+		cols << QColor(15, 153, 138);
 	}
 
 	return cols;

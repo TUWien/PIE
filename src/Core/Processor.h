@@ -126,7 +126,7 @@ public:
 
 	Type type() const;
 	QString name() const;
-	virtual cv::Mat process(RootCollection* c) const = 0;
+	virtual cv::Mat process(Collection* c) const = 0;
 
 protected:
 
@@ -138,7 +138,7 @@ protected:
 class DllExport RegionMapper : public AbstractMapper {
 
 public:
-	cv::Mat process(RootCollection* c) const;
+	cv::Mat process(Collection* c) const;
 
 protected:
 	virtual std::function<double(const Region&)> processor() const = 0;
@@ -147,7 +147,7 @@ protected:
 class DllExport PageMapper : public AbstractMapper {
 
 public:
-	cv::Mat process(RootCollection* c) const;
+	cv::Mat process(Collection* c) const;
 
 protected:
 	virtual std::function<double(const PageData&)> processor() const = 0;
@@ -205,13 +205,13 @@ protected:
 class DllExport DisplayConverter {
 
 public:
-	DisplayConverter(QSharedPointer<RootCollection> RootCollection);
+	DisplayConverter(QSharedPointer<Collection> Collection);
 
 	cv::Mat map(QSharedPointer<AbstractMapper> mapper) const;
 
 private:
 
-	QSharedPointer<RootCollection> mRootCollection;
+	QSharedPointer<Collection> mCollection;
 
 };
 
@@ -224,7 +224,7 @@ namespace cmp {
 }
 
 namespace test {
-	DllExport bool Processor(const RootCollection& c);
+	DllExport bool Processor(const Collection& c);
 }
 
 }

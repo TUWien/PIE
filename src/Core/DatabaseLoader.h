@@ -55,12 +55,12 @@ public:
 
 	bool parse();
 
-	QSharedPointer<RootCollection> collection() const;
+	QSharedPointer<Collection> collection() const;
 
 private:
 	QString mFilePath;
 
-	QSharedPointer<RootCollection> mCollection;
+	QSharedPointer<Collection> mCollection;
 };
 
 }

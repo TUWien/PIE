@@ -29,7 +29,7 @@
  [4] https://nomacs.org
  *******************************************************************************************************/
 
-#include "PlotGL.h"
+#include "ViewPort.h"
 #include "Plot.h"
 #include "WidgetManager.h"
 #include "ActionManager.h"
@@ -45,7 +45,7 @@
 
 namespace pie {
 
-	DotViewPort::DotViewPort(QSharedPointer<RootCollection> collection, DotPlotParams* params, DotPlot* parent) : QOpenGLWidget(parent) {
+	DotViewPort::DotViewPort(QSharedPointer<Collection> collection, DotPlotParams* params, DotPlot* parent) : QOpenGLWidget(parent) {
 
 		mCollection = collection;
 		mP = params;
@@ -282,21 +282,23 @@ namespace pie {
 			return false;	// illegal data - out of sync?
 
 		// TODO: add colors here
-		//for (int cIdx = 0; cIdx < groups.size(); cIdx++) {
+		
+		int start = 0;
+		for (auto doc : mCollection->documents()) {
 
 			//// hide current points
 			//if (!groups[cIdx]->visible())
 			//	continue;
 
 			// set the color
-			const QColor& col = ColorManager::darkGray();//groups[cIdx]->color();
+			const QColor& col = doc->color();
 			float alpha = col.alpha() == 255 ? mP->alpha() / 255.0f : col.alpha() / 255.0f;
 			glColor4f((GLfloat)col.redF(), (GLfloat)col.greenF(), (GLfloat)col.blueF(), (GLfloat)alpha);
 
-			int count = mXData.cols;
+			int count = doc->numPages();
 
-			const float* x = mXData.ptr<float>();
-			const float* y = mYData.ptr<float>();
+			const float* x = mXData.ptr<float>()+start;
+			const float* y = mYData.ptr<float>()+start;
 
 			// draw the points
 			double skip = 0.0;
@@ -313,7 +315,8 @@ namespace pie {
 
 				glVertex3f(x[idx], y[idx], 1.0);
 			}
-		//}
+			start += doc->numPages();
+		}
 
 		return true;
 	}
