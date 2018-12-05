@@ -142,6 +142,6 @@ namespace pie {
 		void updateList(QSharedPointer<Collection> col);
 
 		QListWidget* mLegendList = 0;
-		QSharedPointer<Collection> mCollection = 0;
+		QSharedPointer<Collection> mCollection;
 	};
 }
