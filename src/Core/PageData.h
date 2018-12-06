@@ -37,6 +37,7 @@
 #include <QVector>
 #include <QSize>
 #include <QColor>
+#include <QMap>
 
 #include <functional>
 #pragma warning(pop)
@@ -173,12 +174,16 @@ public:
 	bool isEmpty() const override;
 	int numPages() const override;
 	QVector<QSharedPointer<PageData> > pages() const override;
+	QMap<QString, int> dictionary();
+	float dictionaryDistance(Document& doc);
 
 	static Document fromJson(const QJsonObject& jo);
 
 private:
-	QVector<QSharedPointer<PageData> > mPages;
+	void createDictionary();
 
+	QVector<QSharedPointer<PageData> > mPages;
+	QMap<QString, int> mDictionary;
 };
 
 class DllExport Collection : public BaseCollection {
