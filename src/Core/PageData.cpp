@@ -37,6 +37,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QSharedPointer>
+#include <QtMath>
 #include <QDebug>
 #pragma warning(pop)
 
@@ -200,6 +201,70 @@ namespace pie {
 	QVector<QSharedPointer<PageData> > Document::pages() const {
 		return mPages;
 	}
+
+	void Document::createDictionary() {
+		QString text;
+		for (auto page : mPages) {
+			text += page->text();
+			text += " ";
+		}
+
+		QStringList words = text.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+
+		//QStringList filteredWords;
+		//int ignoreSize = 3;
+		//for (const auto &word : words) {
+		//	if (word.length() > ignoreSize) filteredWords << word;
+		//}
+
+		for (const auto &word : words) {
+			mDictionary[word]++;
+		}
+
+	}
+
+	QMap<QString, int> Document::dictionary()	{
+
+		if (mDictionary.isEmpty())
+			createDictionary();
+
+		return mDictionary;
+	}
+
+	float Document::dictionaryDistance(Document& doc) {
+
+		if (mDictionary.isEmpty())
+			createDictionary();
+
+		QMapIterator<QString, int> d(mDictionary);
+		QMap<QString, int> docDict = doc.dictionary();
+
+		if (mDictionary.isEmpty() || docDict.isEmpty())
+			return -1;
+
+		float sumAB = 0;
+		float sumASqrd = 0;
+		float sumBSqrd = 0;
+
+		while (d.hasNext()) {
+			d.next();
+
+			float a = (float)d.value();
+			float b = (float)docDict[d.key()];
+
+			sumAB += a * b;
+			sumASqrd += a * a;
+			sumBSqrd += b * b;
+
+		}
+
+		if (sumASqrd == 0 && sumBSqrd == 0)
+			return -1;
+
+		return sumAB / (float)(qSqrt(sumASqrd) + qSqrt(sumBSqrd));
+	}
+
+
 
 	Document Document::fromJson(const QJsonObject & jo) {
 
