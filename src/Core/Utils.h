@@ -160,7 +160,7 @@ protected:
 namespace ColorManager {
 
 	DllExport QColor randColor(double alpha = 1.0);
-	DllExport QColor getColor(int idx, double alpha = 1.0);
+	DllExport QColor color(int idx, double alpha = 1.0);
 	DllExport QVector<QColor> colors();
 
 	DllExport QColor lightGray(double alpha = 1.0);

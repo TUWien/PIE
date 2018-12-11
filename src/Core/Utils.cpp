@@ -574,7 +574,7 @@ QColor ColorManager::randColor(double alpha) {
 
 	int	idx = qRound(Utils::rand()*maxCols * 3);
 
-	return getColor(idx, alpha);
+	return color(idx, alpha);
 }
 
 /// <summary>
@@ -582,7 +582,7 @@ QColor ColorManager::randColor(double alpha) {
 /// </summary>
 /// <param name="idx">If idx != -1 a specific color is chosen from the palette.</param>
 /// <returns></returns>
-QColor ColorManager::getColor(int idx, double alpha) {
+QColor ColorManager::color(int idx, double alpha) {
 
 	assert(idx >= 0);
 
@@ -593,9 +593,9 @@ QColor ColorManager::getColor(int idx, double alpha) {
 
 	// currently not hit
 	if (idx > 2 * cols.size())
-		col = col.darker();
-	else if (idx > cols.size())
 		col = col.lighter();
+	else if (idx > cols.size())
+		col = col.darker();
 
 	col.setAlpha(qRound(alpha * 255));
 
@@ -616,6 +616,8 @@ QVector<QColor> ColorManager::colors() {
 		cols << QColor(102, 80, 10);
 		cols << QColor(230, 178, 11);
 		cols << QColor(15, 153, 138);
+		cols << QColor(102, 180, 10);
+		cols << QColor(15, 253, 138);
 	}
 
 	return cols;

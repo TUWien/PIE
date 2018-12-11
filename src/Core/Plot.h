@@ -138,13 +138,12 @@ namespace pie {
 		//void showDecorations(bool show = true);
 		MenuButton* menuButton() const;
 
-		virtual QPoint axisIndex() const;
-		virtual void setFullScreen(bool fullScreen) override;
-		
-		virtual void setSelected(bool selected);
+		 QPoint axisIndex() const;
+		void setFullScreen(bool fullScreen) override;
+		void setSelected(bool selected) override;
 
 	public slots:
-		virtual void setAxisIndex(const QPoint& index);
+		void setAxisIndex(const QPoint& index) override;
 		void setMinimumSize(const QSize& size);
 		void update();
 
@@ -172,7 +171,7 @@ namespace pie {
 		//void clear();
 
 	public slots:
-		virtual void setVisible(bool show);
+		virtual void setVisible(bool show) override;
 		void setNumColumns(int numColumns = -1);
 		void addPlot(bool update = true);
 		void removePlot();

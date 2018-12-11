@@ -221,7 +221,7 @@ namespace pie {
 		p.setBrush(document->color());
 		p.drawRect(colIcon.rect());
 
-		QString name = document->pages()[0]->collectionName() + " " + document->name() + " [" + QString::number(document->numPages()) + "]";
+		QString name = /*document->pages()[0]->collectionName() + " " +*/ document->name() + " [" + QString::number(document->numPages()) + "]";
 
 		setText(name);
 		setIcon(colIcon);

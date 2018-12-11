@@ -293,7 +293,7 @@ namespace pie {
 			// set the color
 			const QColor& col = !doc->selected() ? doc->color() : ColorManager::red();
 			float zIndex = doc->selected() ? 1.0f : 0.9f;
-			float alpha = col.alpha() == 255 ? mP->alpha() / 255.0f : col.alpha() / 255.0f;
+			float alpha = col.alpha() == 255 && !doc->selected() ? mP->alpha() / 255.0f : col.alpha() / 255.0f;
 			glColor4f((GLfloat)col.redF(), (GLfloat)col.greenF(), (GLfloat)col.blueF(), (GLfloat)alpha);
 
 			int count = doc->numPages();

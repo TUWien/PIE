@@ -109,7 +109,8 @@ int main(int argc, char** argv) {
 	else {
 		pie::MainWindow* win = new pie::MainWindow();
 		win->show();
-		
+		//win->resize(1785, 500);
+
 		app.exec();
 
 		delete win;

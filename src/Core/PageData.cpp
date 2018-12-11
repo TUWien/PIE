@@ -204,11 +204,13 @@ namespace pie {
 	Document Document::fromJson(const QJsonObject & jo) {
 
 		Document d(jo["name"].toString());
-		d.setColor(ColorManager::randColor());
 
 		QJsonArray entities = jo.value("pages").toArray();
 		for (auto p : entities)
 			d.mPages << QSharedPointer<PageData>::create(PageData::fromJson(p.toObject()));
+
+		// always get the same color - this is bad if all documents have the same size
+		d.setColor(ColorManager::color(d.numPages()));
 
 		return d;
 	}
